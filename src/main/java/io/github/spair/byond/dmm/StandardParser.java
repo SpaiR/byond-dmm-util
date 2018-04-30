@@ -1,6 +1,9 @@
 package io.github.spair.byond.dmm;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,49 +13,41 @@ class StandardParser implements MapParser {
     private static final Pattern MAP =
             Pattern.compile("\\((\\d+?),(\\d+?),(\\d+?)\\)\\s=\\s\\{\"\\s*([\\na-zA-Z]+)\\s*\"}");
 
-    private static final Pattern SPLIT_INSTANCE = Pattern.compile("(,|^)(?=/)");
+    private static final Pattern SPLIT_ITEM = Pattern.compile("(,|^)(?=/)");
     private static final Pattern SPLIT_VARS = Pattern.compile(";\\s(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     private static final Pattern SPLIT_VAR = Pattern.compile("\\s=\\s");
 
     static final Pattern SPLIT_NEW_LINE = Pattern.compile("\n");
 
-    private static final Pattern INSTANCE_WITH_VAR = Pattern.compile("^(/.+)\\{(.*)}");
+    private static final Pattern ITEM_WITH_VAR = Pattern.compile("^(/.+)\\{(.*)}");
 
     private Map<String, TileInstance> tileInstances;
-    private Pattern instanceSplitterator;
+    private Pattern tileInstanceSplit;
 
     @Override
     public Dmm parse(final String dmmText) {
-        if (Objects.isNull(dmmText) || dmmText.isEmpty()) {
-            throw new IllegalArgumentException("File could not be empty");
-        }
-
         tileInstances = parseTiles(collectTiles(dmmText));
 
         if (tileInstances.isEmpty()) {
-            throw new IllegalArgumentException("No tiles were found");
+            throw new IllegalArgumentException("No tiles found");
         }
 
         final int tileInstanceSize = tileInstances.keySet().iterator().next().length();
-        instanceSplitterator = Pattern.compile("(?<=\\G.{" + tileInstanceSize + "})");
+        tileInstanceSplit = Pattern.compile("(?<=\\G.{" + tileInstanceSize + "})");
 
         return createDmm(collectMaps(dmmText));
     }
 
     protected Dmm createDmm(final List<MapDeclaration> mapDeclarations) {
-        Dmm dmm = new Dmm();
-        Map<Integer, ZLevel> zLevels = dmm.getZLevels();
-
         if (mapDeclarations.isEmpty()) {
-            throw new IllegalArgumentException("No maps were found");
+            throw new IllegalArgumentException("No maps found");
         }
 
-        mapDeclarations.forEach(mapDeclaration -> {
-            final int z = mapDeclaration.getZ();
+        Dmm dmm = new Dmm();
 
-            ZLevel zLevel = zLevels.getOrDefault(z, new ZLevel(z));
-            zLevel.setTiles(parseMapText(mapDeclaration.getMapText(), z));
-            zLevels.putIfAbsent(z, zLevel);
+        mapDeclarations.forEach(mapDeclaration -> {
+            final int zLevelNum = mapDeclaration.getZ();
+            dmm.getZLevelOrCreate(zLevelNum).setTiles(parseMapText(mapDeclaration.getMapText(), zLevelNum));
         });
 
         return dmm;
@@ -60,7 +55,7 @@ class StandardParser implements MapParser {
 
     protected Map<String, String> collectTiles(final String dmmText) {
         Matcher tileMatcher = TILE.matcher(dmmText);
-        Map<String, String> tiles = new TreeMap<>();
+        Map<String, String> tiles = new HashMap<>();
 
         while (tileMatcher.find()) {
             tiles.put(tileMatcher.group(1), tileMatcher.group(2));
@@ -74,22 +69,22 @@ class StandardParser implements MapParser {
 
         tiles.forEach((key, value) -> {
             TileInstance tileInstance = new TileInstance(key);
-            String[] allInstances = SPLIT_INSTANCE.split(value);
+            String[] allItems = SPLIT_ITEM.split(value);
 
-            for (String instance : allInstances) {
+            for (String item : allItems) {
                 DmmItem dmmItem = new DmmItem();
-                Matcher instanceWithVar = INSTANCE_WITH_VAR.matcher(instance);
+                Matcher itemWithVar = ITEM_WITH_VAR.matcher(item);
 
-                if (instanceWithVar.find()) {
-                    dmmItem.setType(instanceWithVar.group(1));
-                    String[] vars = SPLIT_VARS.split(instanceWithVar.group(2));
+                if (itemWithVar.find()) {
+                    dmmItem.setType(itemWithVar.group(1));
+                    String[] vars = SPLIT_VARS.split(itemWithVar.group(2));
 
-                    for (String varDef : vars) {
-                        String[] splittedVarDef = SPLIT_VAR.split(varDef);
-                        dmmItem.getVars().put(splittedVarDef[0], splittedVarDef[1]);
+                    for (String varDefinition : vars) {
+                        String[] splittedVarDefinition = SPLIT_VAR.split(varDefinition);
+                        dmmItem.setVar(splittedVarDefinition[0], splittedVarDefinition[1]);
                     }
                 } else {
-                    dmmItem.setType(instance);
+                    dmmItem.setType(item);
                 }
 
                 tileInstance.addDmmItem(dmmItem);
@@ -117,14 +112,14 @@ class StandardParser implements MapParser {
 
     private Tile[][] parseMapText(final String mapText, final int currentZLevel) {
         String[] mapLines = SPLIT_NEW_LINE.split(mapText);
-        Tile[][] tiles = new Tile[mapLines.length][instanceSplitterator.split(mapLines[0]).length];
+        Tile[][] tiles = new Tile[mapLines.length][tileInstanceSplit.split(mapLines[0]).length];
 
         int y = 0;
 
         for (String mapLine : mapLines) {
             int x = 0;
 
-            for (String instance : instanceSplitterator.split(mapLine)) {
+            for (String instance : tileInstanceSplit.split(mapLine)) {
                 tiles[y][x] = new Tile(x + 1, y + 1, currentZLevel, tileInstances.get(instance));
                 x++;
             }

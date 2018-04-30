@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@SuppressWarnings("WeakerAccess")
 public class DmmItem {
 
     private String type;
@@ -21,7 +22,7 @@ public class DmmItem {
         vars.put(name, value);
     }
 
-    public void setStringVar(final String name, final String value) {
-        vars.put(name, '"' + value + '"');
+    public String getVar(final String name) {
+        return vars.get(name);
     }
 }

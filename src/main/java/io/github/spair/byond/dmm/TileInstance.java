@@ -2,20 +2,26 @@ package io.github.spair.byond.dmm;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Data
+@SuppressWarnings("WeakerAccess")
 public class TileInstance {
 
-    private String key;
-    private List<DmmItem> dmmItems = new ArrayList<>();
+    private String type;
+    private Map<String, DmmItem> dmmItems = new HashMap<>();
 
-    public TileInstance(final String key) {
-        this.key = key;
+    public TileInstance(final String type) {
+        this.type = type;
     }
 
     public void addDmmItem(final DmmItem dmmItem) {
-        dmmItems.add(dmmItem);
+        dmmItems.put(dmmItem.getType(), dmmItem);
+    }
+
+    public DmmItem getDmmItem(final String type) {
+        return dmmItems.get(type);
     }
 }

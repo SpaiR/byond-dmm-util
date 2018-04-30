@@ -5,9 +5,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 @Data
 @Setter(AccessLevel.NONE)
-public class ZLevel {
+@SuppressWarnings("WeakerAccess")
+public class ZLevel implements Iterable<Tile> {
 
     private int level;
     private int maxX;
@@ -42,6 +47,45 @@ public class ZLevel {
         } else if (x > maxX || y > maxY) {
             throw new IllegalArgumentException(
                     "Nonexistent coordinates. X: " + x + ", Y: " + y + ". Max X: " + maxX + ", Max Y:" + maxY);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public Iterator<Tile> iterator() {
+        return new ZLevelIterator();
+    }
+
+    private class ZLevelIterator implements Iterator<Tile> {
+
+        private int x = 0;
+        private int y = 1;
+
+        @Override
+        public boolean hasNext() {
+            return (x + 1) <= maxX || (y + 1) <= maxY;
+        }
+
+        @Override
+        public Tile next() {
+            boolean isNewRow = false;
+
+            if (x + 1 <= maxX) {
+                x++;
+            } else {
+                x = 1;
+                isNewRow = true;
+            }
+
+            if (isNewRow) {
+                y++;
+            }
+
+            if (x > maxX || y > maxY) {
+                throw new NoSuchElementException();
+            }
+
+            return getTile(x, y);
         }
     }
 }

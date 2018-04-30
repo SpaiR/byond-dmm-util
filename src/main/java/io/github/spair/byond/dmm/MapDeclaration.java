@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 class MapDeclaration {
+
     private int x, y, z;
     private String mapText;
 }

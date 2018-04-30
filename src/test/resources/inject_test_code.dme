@@ -1,0 +1,3 @@
+/obj/item
+	var/var1
+	var/var2 = "original value"

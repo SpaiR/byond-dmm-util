@@ -1,5 +1,8 @@
 package io.github.spair.byond.dmm;
 
+import io.github.spair.byond.dme.ByondTypes;
+import io.github.spair.byond.dme.Dme;
+import io.github.spair.byond.dme.DmeParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,8 +24,8 @@ public class DmmParserTest {
         assertNotNull(dmm.getZLevel(1));
 
         DmmItem sandItem = new DmmItem("/turf/simulated/floor/beach/sand");
-        sandItem.setStringVar("tag", "icon-desert");
-        sandItem.setStringVar("icon_state", "desert");
+        sandItem.setVar("tag", "\"icon-desert\"");
+        sandItem.setVar("icon_state", "\"desert\"");
 
         DmmItem beachItem = new DmmItem("/area/holodeck/source_beach");
 
@@ -34,8 +37,8 @@ public class DmmParserTest {
 
         assertEquals(tile, dmm.getTile(1, 1, 1));
 
-        sandItem.setStringVar("tag", "icon-beachcorner (NORTH)");
-        sandItem.setStringVar("icon_state", "beachcorner");
+        sandItem.setVar("tag", "\"icon-beachcorner (NORTH)\"");
+        sandItem.setVar("icon_state", "\"beachcorner\"");
         sandItem.setVar("dir", "1");
 
         tileInstance = new TileInstance("m");
@@ -78,6 +81,28 @@ public class DmmParserTest {
         tile = new Tile(3, 5, 1, tileInstance);
 
         assertEquals(tile, dmm.getTile(3 ,5 ,1));
+    }
+
+    @Test
+    public void testParseAndInject() {
+        Dme dme = DmeParser.parse(ResourceUtil.loadFile("inject_test_code.dme"));
+        Dmm dmm = dmmParser.parseAndInjectDme(ResourceUtil.loadFile("inject_test_map.dmm"), dme);
+
+        assertTrue(dmm.isDmeInjected());
+
+        ZLevel zLevel = dmm.getZLevel(1);
+
+        TileItem objItem = zLevel.getTile(1, 1).getTileItem("/obj/item");
+
+        assertFalse(objItem.hasCustomVars());
+        assertEquals(ByondTypes.NULL, objItem.getCustomOrOriginalVar("var1"));
+        assertEquals("\"original value\"", objItem.getCustomOrOriginalVar("var2"));
+
+        objItem = zLevel.getTile(2, 1).getTileItem("/obj/item");
+
+        assertTrue(objItem.hasCustomVars());
+        assertEquals("1", objItem.getCustomOrOriginalVar("var1"));
+        assertEquals("\"custom value\"", objItem.getCustomOrOriginalVar("var2"));
     }
 
     @Test(expected = IllegalArgumentException.class)
