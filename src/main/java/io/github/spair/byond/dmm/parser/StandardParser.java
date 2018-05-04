@@ -1,23 +1,27 @@
-package io.github.spair.byond.dmm;
+package io.github.spair.byond.dmm.parser;
 
-import java.util.Map;
+import io.github.spair.byond.ByondTypes;
+import io.github.spair.byond.ByondVars;
+import io.github.spair.byond.dme.Dme;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class StandardParser implements MapParser {
 
     private static final Pattern TILE = Pattern.compile("\"(\\w+)\"\\s=\\s\\((.*)\\)\n");
-    private static final Pattern MAP =
-            Pattern.compile("\\((\\d+?),(\\d+?),(\\d+?)\\)\\s=\\s\\{\"\\s*([\\na-zA-Z]+)\\s*\"}");
 
     private static final Pattern SPLIT_ITEM = Pattern.compile("(,|^)(?=/)");
-    private static final Pattern SPLIT_VARS = Pattern.compile(";\\s(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+    private static final Pattern SPLIT_VARS = Pattern.compile(";\\s?(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     private static final Pattern SPLIT_VAR = Pattern.compile("\\s=\\s");
 
     static final Pattern SPLIT_NEW_LINE = Pattern.compile("\n");
+    static final Pattern MAP =
+            Pattern.compile("\\((\\d+?),(\\d+?),(\\d+?)\\)\\s=\\s\\{\"\\s*([\\na-zA-Z]+)\\s*\"}");
 
     private static final Pattern ITEM_WITH_VAR = Pattern.compile("^(/.+)\\{(.*)}");
 
@@ -25,7 +29,7 @@ class StandardParser implements MapParser {
     private Pattern tileInstanceSplit;
 
     @Override
-    public Dmm parse(final String dmmText) {
+    public final Dmm parse(final String dmmText, final Dme dme) {
         tileInstances = parseTiles(collectTiles(dmmText));
 
         if (tileInstances.isEmpty()) {
@@ -33,24 +37,51 @@ class StandardParser implements MapParser {
         }
 
         final int tileInstanceSize = tileInstances.keySet().iterator().next().length();
-        tileInstanceSplit = Pattern.compile("(?<=\\G.{" + tileInstanceSize + "})");
+        tileInstanceSplit = Pattern.compile(String.format("(?<=\\G.{%d})", tileInstanceSize));
 
-        return createDmm(collectMaps(dmmText));
+        Dmm dmm = createDmm(collectMap(dmmText), dme);
+        dmm.setTileInstances(tileInstances);
+
+        return dmm;
     }
 
-    protected Dmm createDmm(final List<MapDeclaration> mapDeclarations) {
-        if (mapDeclarations.isEmpty()) {
+    private Dmm createDmm(final String mapText, final Dme dme) {
+        if (mapText.isEmpty()) {
             throw new IllegalArgumentException("No maps found");
         }
 
         Dmm dmm = new Dmm();
 
-        mapDeclarations.forEach(mapDeclaration -> {
-            final int zLevelNum = mapDeclaration.getZ();
-            dmm.getZLevelOrCreate(zLevelNum).setTiles(parseMapText(mapDeclaration.getMapText(), zLevelNum));
+        dmm.setTiles(parseMapText(mapText));
+        dmm.setDmeRootPath(dme.getAbsoluteRootPath());
+        dmm.setIconSize(dme.getItem(ByondTypes.WORLD).getVarAsInt(ByondVars.ICON_SIZE).orElse(Dmm.DEFAULT_ICON_SIZE));
+
+        dmm.forEach(tile -> {
+            List<TileItem> tileItems = new ArrayList<>();
+
+            tile.getTileInstance().forEach(dmmItem ->
+                    tileItems.add(
+                            new TileItem(
+                                    tile.getX(), tile.getY(), tile.getZ(),
+                                    dme.getItem(dmmItem.getType()), dmmItem.getVars()
+                            )
+                    )
+            );
+
+            tile.setTileItems(tileItems);
         });
 
         return dmm;
+    }
+
+    protected String collectMap(final String dmmText) {
+        Matcher mapMatcher = MAP.matcher(dmmText);
+
+        if (mapMatcher.find()) {
+            return mapMatcher.group(4);
+        }
+
+        throw new IllegalArgumentException("Map was not found in file");
     }
 
     protected Map<String, String> collectTiles(final String dmmText) {
@@ -96,35 +127,23 @@ class StandardParser implements MapParser {
         return tileInstances;
     }
 
-    private List<MapDeclaration> collectMaps(final String dmmText) {
-        Matcher mapMatcher = MAP.matcher(dmmText);
-        List<MapDeclaration> maps = new ArrayList<>();
-
-        while (mapMatcher.find()) {
-            int x = Integer.parseInt(mapMatcher.group(1));
-            int y = Integer.parseInt(mapMatcher.group(2));
-            int z = Integer.parseInt(mapMatcher.group(3));
-            maps.add(new MapDeclaration(x, y, z, mapMatcher.group(4)));
-        }
-
-        return maps;
-    }
-
-    private Tile[][] parseMapText(final String mapText, final int currentZLevel) {
+    private Tile[][] parseMapText(final String mapText) {
         String[] mapLines = SPLIT_NEW_LINE.split(mapText);
-        Tile[][] tiles = new Tile[mapLines.length][tileInstanceSplit.split(mapLines[0]).length];
+        final int maxY = mapLines.length;
+        final int maxX = tileInstanceSplit.split(mapLines[0]).length;
+        Tile[][] tiles = new Tile[maxY][maxX];
 
-        int y = 0;
+        int y = maxY - 1;
 
         for (String mapLine : mapLines) {
             int x = 0;
 
             for (String instance : tileInstanceSplit.split(mapLine)) {
-                tiles[y][x] = new Tile(x + 1, y + 1, currentZLevel, tileInstances.get(instance));
+                tiles[y][x] = new Tile(x + 1, y + 1, 1, tileInstances.get(instance));
                 x++;
             }
 
-            y++;
+            y--;
         }
 
         return tiles;

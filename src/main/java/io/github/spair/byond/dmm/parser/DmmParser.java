@@ -1,15 +1,23 @@
-package io.github.spair.byond.dmm;
+package io.github.spair.byond.dmm.parser;
 
 import io.github.spair.byond.dme.Dme;
 
-import java.io.*;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 @SuppressWarnings("WeakerAccess")
 public final class DmmParser {
 
     private static final String DMM_SUFFIX = ".dmm";
 
-    public Dmm parse(final File dmmFile) {
+    public static Dmm parseDmm(final File dmmFile, final Dme dme) {
+        return new DmmParser().parse(dmmFile, dme);
+    }
+
+    public Dmm parse(final File dmmFile, final Dme dme) {
         if (dmmFile.isFile() && dmmFile.getName().endsWith(DMM_SUFFIX)) {
             final String dmmText = readFile(dmmFile);
 
@@ -17,16 +25,10 @@ public final class DmmParser {
                 throw new IllegalArgumentException("File could not be empty");
             }
 
-            return ParserFactory.createFromText(dmmText).parse(dmmText);
+            return ParserFactory.createFromText(dmmText).parse(dmmText, dme);
         } else {
             throw new IllegalArgumentException("Parser only accept '.dmm' files");
         }
-    }
-
-    public Dmm parseAndInjectDme(final File dmmFile, final Dme dme) {
-        Dmm dmm = parse(dmmFile);
-        dmm.injectDme(dme);
-        return dmm;
     }
 
     private String readFile(final File dmmFile) {

@@ -1,0 +1,148 @@
+package io.github.spair.byond.dmm.render;
+
+import io.github.spair.byond.dmm.parser.Dmm;
+import io.github.spair.byond.dmm.parser.TileItem;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.List;
+
+@SuppressWarnings("WeakerAccess")
+public final class DmmRender {
+
+    private Planes planes;
+    private Dmm dmm;
+    private BufferedImage finalImage;
+
+    private DmmRender(final Dmm dmm) {
+        this.dmm = dmm;
+        this.planes = new Planes();
+
+        final int width = dmm.getMaxX() * dmm.getIconSize();
+        final int height = dmm.getMaxY() * dmm.getIconSize();
+        this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    public static BufferedImage renderToImage(final Dmm dmm) {
+        return renderToImage(dmm, Collections.emptySet());
+    }
+
+    public static BufferedImage renderToImage(final Dmm dmm, final String... typesToIgnore) {
+        return renderToImage(dmm, new HashSet<>(Arrays.asList(typesToIgnore)));
+    }
+
+    public static BufferedImage renderToImage(final Dmm dmm, final Set<String> typesToIgnore) {
+        final DmmRender dmmRender = new DmmRender(dmm);
+
+        dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);
+        dmmRender.placeAllItemsOnImage();
+
+        return dmmRender.finalImage;
+    }
+
+    private void distributeToSortedPlanesAndLayers(final Set<String> typesToIgnore) {
+        dmm.forEach(tile ->
+                tile.forEach(tileItem -> {
+                    if (isIgnoredType(tileItem, typesToIgnore)) {
+                        return;
+                    }
+
+                    final double itemPlane = VarExtractor.plane(tileItem);
+                    final double itemLayer = VarExtractor.layer(tileItem);
+
+                    planes.getPlane(itemPlane).getLayer(itemLayer).addItem(tileItem);
+                })
+        );
+    }
+
+    private boolean isIgnoredType(final TileItem item, final Set<String> typesToIgnore) {
+        for (String type : typesToIgnore) {
+            if (item.isType(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void placeAllItemsOnImage() {
+        final TileItemRender itemRender = new TileItemRender(dmm.getDmeRootPath());
+        final Graphics2D finalCanvas = finalImage.createGraphics();
+
+/*        finalCanvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        finalCanvas.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        finalCanvas.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        finalCanvas.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);*/
+
+        final int maxY = dmm.getMaxY();
+        final int iconSize = dmm.getIconSize();
+
+        planes.forEach(plane ->
+                plane.forEach(layer ->
+                        layer.forEach(tileItem ->
+                                itemRender.renderItem(tileItem).ifPresent(itemImage -> {
+                                    int xPos = ((tileItem.getX() - 1) * iconSize) + itemImage.getXShift();
+                                    int yPos = ((maxY - tileItem.getY()) * iconSize) - itemImage.getYShift();
+
+                                    finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
+                                })
+                        )
+                )
+        );
+
+        finalCanvas.dispose();
+    }
+
+    private static final class Planes implements Iterable<Plane> {
+        private Map<Double, Plane> planes = new TreeMap<>();
+
+        Plane getPlane(final double planeValue) {
+            Plane plane = planes.get(planeValue);
+            if (Objects.isNull(plane)) {
+                plane = new Plane();
+                planes.put(planeValue, plane);
+            }
+            return plane;
+        }
+
+        @Nonnull
+        @Override
+        public Iterator<Plane> iterator() {
+            return planes.values().iterator();
+        }
+    }
+
+    private static final class Plane implements Iterable<Layer> {
+        private Map<Double, Layer> layers = new TreeMap<>();
+
+        Layer getLayer(final double layerValue) {
+            Layer layer = layers.get(layerValue);
+            if (Objects.isNull(layer)) {
+                layer = new Layer();
+                layers.put(layerValue, layer);
+            }
+            return layer;
+        }
+
+        @Nonnull
+        @Override
+        public Iterator<Layer> iterator() {
+            return layers.values().iterator();
+        }
+    }
+
+    private static final class Layer implements Iterable<TileItem> {
+        private List<TileItem> items = new ArrayList<>();
+
+        private void addItem(final TileItem tileItem) {
+            items.add(tileItem);
+        }
+
+        @Nonnull
+        @Override
+        public Iterator<TileItem> iterator() {
+            return items.iterator();
+        }
+    }
+}

@@ -1,0 +1,70 @@
+package io.github.spair.byond.dmm.parser;
+
+import java.util.*;
+import java.util.regex.Matcher;
+
+final class TGMParser extends StandardParser implements MapParser {
+
+    @Override
+    protected Map<String, String> collectTiles(final String dmmText) {
+        return super.collectTiles(convertAndExtractTilesDefinition(dmmText));
+    }
+
+    @Override
+    protected String collectMap(String dmmText) {
+        Matcher mapMatcher = MAP.matcher(dmmText);
+        List<List<String>> columns = new ArrayList<>();
+
+        while (mapMatcher.find()) {
+            String[] rows = SPLIT_NEW_LINE.split(mapMatcher.group(4));
+
+            if (columns.isEmpty()) {
+                Arrays.stream(rows).<List<String>>map(r -> new ArrayList<>()).forEach(columns::add);
+            }
+
+            for (int currentY = 0; currentY < rows.length; currentY++) {
+                columns.get(currentY).add(rows[currentY]);
+            }
+        }
+
+        if (!columns.isEmpty()) {
+            StringBuilder mapTextBuilder = new StringBuilder();
+
+            columns.forEach(row -> {
+                row.forEach(mapTextBuilder::append);
+                mapTextBuilder.append('\n');
+            });
+
+            return mapTextBuilder.toString();
+        } else {
+            throw new IllegalArgumentException("Map not found in file");
+        }
+    }
+
+    private String convertAndExtractTilesDefinition(final String dmmText) {
+        StringBuilder tileDefBuilder = new StringBuilder();
+        Scanner scanner = new Scanner(dmmText);
+
+        boolean isFirstLine = true;
+
+        while (scanner.hasNextLine()) {
+            final String line = scanner.nextLine();
+
+            if (isFirstLine) {
+                isFirstLine = false;
+                continue;
+            } else if (line.startsWith("(")) {
+                break;
+            } else if (line.startsWith("\"") && tileDefBuilder.length() > 0) {
+                tileDefBuilder.append('\n');
+            }
+
+            tileDefBuilder.append(line);
+        }
+
+        tileDefBuilder.append('\n');
+        scanner.close();
+
+        return tileDefBuilder.toString();
+    }
+}
