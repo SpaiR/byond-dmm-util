@@ -1,6 +1,5 @@
 package io.github.spair.byond.dmm.render;
 
-import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.dmi.Dmi;
 import io.github.spair.byond.dmi.DmiSlurper;
 import io.github.spair.byond.dmi.DmiSprite;

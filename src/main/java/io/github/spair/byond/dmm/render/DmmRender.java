@@ -15,13 +15,15 @@ public final class DmmRender {
     private Planes planes;
     private Dmm dmm;
     private BufferedImage finalImage;
+    private MapRegion mapRegion;
 
-    private DmmRender(final Dmm dmm) {
+    private DmmRender(final Dmm dmm, final MapRegion mapRegion) {
         this.dmm = dmm;
         this.planes = new Planes();
+        this.mapRegion = mapRegion;
 
-        final int width = dmm.getMaxX() * dmm.getIconSize();
-        final int height = dmm.getMaxY() * dmm.getIconSize();
+        final int width = (mapRegion.getUpperX() - mapRegion.getLowerX()) * dmm.getIconSize();
+        final int height = (mapRegion.getUpperY() - mapRegion.getLowerY()) * dmm.getIconSize();
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
@@ -34,7 +36,15 @@ public final class DmmRender {
     }
 
     public static BufferedImage renderToImage(final Dmm dmm, final Set<String> typesToIgnore) {
-        final DmmRender dmmRender = new DmmRender(dmm);
+        return renderToImage(dmm, MapRegion.of(0, 0, dmm.getMaxX(), dmm.getMaxY()), typesToIgnore);
+    }
+
+    public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion, final String... typesToIgnore) {
+        return renderToImage(dmm, mapRegion, new HashSet<>(Arrays.asList(typesToIgnore)));
+    }
+
+    public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToIgnore) {
+        final DmmRender dmmRender = new DmmRender(dmm, mapRegion);
 
         dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);
         dmmRender.placeAllItemsOnImage();
@@ -45,7 +55,7 @@ public final class DmmRender {
     private void distributeToSortedPlanesAndLayers(final Set<String> typesToIgnore) {
         dmm.forEach(tile ->
                 tile.forEach(tileItem -> {
-                    if (isIgnoredType(tileItem, typesToIgnore)) {
+                    if (isIgnoredType(tileItem, typesToIgnore) || notInBounds(tileItem)) {
                         return;
                     }
 
@@ -66,24 +76,25 @@ public final class DmmRender {
         return false;
     }
 
+    private boolean notInBounds(final TileItem tileItem) {
+        return tileItem.getX() < mapRegion.getLowerX() || tileItem.getX() > mapRegion.getUpperX()
+                || tileItem.getY() < mapRegion.getLowerY() || tileItem.getY() > mapRegion.getUpperY();
+    }
+
     private void placeAllItemsOnImage() {
         final TileItemRender itemRender = new TileItemRender(dmm.getDmeRootPath());
-        final Graphics2D finalCanvas = finalImage.createGraphics();
+        final Graphics finalCanvas = finalImage.getGraphics();
 
-/*        finalCanvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        finalCanvas.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        finalCanvas.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        finalCanvas.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);*/
-
-        final int maxY = dmm.getMaxY();
         final int iconSize = dmm.getIconSize();
+        final int lowerX = mapRegion.getLowerX();
+        final int upperY = mapRegion.getUpperY();
 
         planes.forEach(plane ->
                 plane.forEach(layer ->
                         layer.forEach(tileItem ->
                                 itemRender.renderItem(tileItem).ifPresent(itemImage -> {
-                                    int xPos = ((tileItem.getX() - 1) * iconSize) + itemImage.getXShift();
-                                    int yPos = ((maxY - tileItem.getY()) * iconSize) - itemImage.getYShift();
+                                    int xPos = ((tileItem.getX() - lowerX - 1) * iconSize) + itemImage.getXShift();
+                                    int yPos = ((upperY - tileItem.getY()) * iconSize) - itemImage.getYShift();
 
                                     finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
                                 })

@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 @Data
 class TileItemImage {
 
-    private int xShift, yShift;
+    private int xShift;
+    private int yShift;
     private BufferedImage image;
 }
