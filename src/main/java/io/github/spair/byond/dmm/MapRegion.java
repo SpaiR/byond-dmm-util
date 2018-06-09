@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.render;
+package io.github.spair.byond.dmm;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

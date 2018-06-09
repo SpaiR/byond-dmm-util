@@ -15,7 +15,7 @@ class StandardParser implements MapParser {
 
     private static final Pattern TILE = Pattern.compile("\"(\\w+)\"\\s=\\s\\((.*)\\)\n");
 
-    private static final Pattern SPLIT_ITEM = Pattern.compile("(,|^)(?=/)");
+    private static final Pattern SPLIT_ITEM = Pattern.compile("(,|^)(?=/)(?![^{]*[}])");
     private static final Pattern SPLIT_VARS = Pattern.compile(";\\s?(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     private static final Pattern SPLIT_VAR = Pattern.compile("\\s=\\s");
 

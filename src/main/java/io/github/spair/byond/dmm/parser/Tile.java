@@ -1,16 +1,21 @@
 package io.github.spair.byond.dmm.parser;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(exclude = "tileInstance")
 @SuppressWarnings("WeakerAccess")
 public class Tile implements Iterable<TileItem> {
 
-    private int x, y, z;
+    private int x;
+    private int y;
+    private int z;
+
     private TileInstance tileInstance;
     private List<TileItem> tileItems;
 

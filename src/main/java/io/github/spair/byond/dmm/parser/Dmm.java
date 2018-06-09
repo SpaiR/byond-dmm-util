@@ -46,6 +46,10 @@ public class Dmm implements Iterable<Tile> {
         return tiles[y - 1][x - 1];
     }
 
+    public boolean hasTile(final int x, final int y) {
+        return x > 0 || x <= maxX || y > 0 || y <= maxY;
+    }
+
     @Nonnull
     @Override
     public Iterator<Tile> iterator() {

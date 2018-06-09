@@ -1,5 +1,6 @@
 package io.github.spair.byond.dmm.render;
 
+import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.parser.Dmm;
 import io.github.spair.byond.dmm.parser.TileItem;
 
@@ -22,8 +23,8 @@ public final class DmmRender {
         this.planes = new Planes();
         this.mapRegion = mapRegion;
 
-        final int width = (mapRegion.getUpperX() - mapRegion.getLowerX()) * dmm.getIconSize();
-        final int height = (mapRegion.getUpperY() - mapRegion.getLowerY()) * dmm.getIconSize();
+        final int width = (mapRegion.getUpperX() - mapRegion.getLowerX() + 1) * dmm.getIconSize();
+        final int height = (mapRegion.getUpperY() - mapRegion.getLowerY() + 1) * dmm.getIconSize();
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
@@ -93,7 +94,7 @@ public final class DmmRender {
                 plane.forEach(layer ->
                         layer.forEach(tileItem ->
                                 itemRender.renderItem(tileItem).ifPresent(itemImage -> {
-                                    int xPos = ((tileItem.getX() - lowerX - 1) * iconSize) + itemImage.getXShift();
+                                    int xPos = ((tileItem.getX() - lowerX) * iconSize) + itemImage.getXShift();
                                     int yPos = ((upperY - tileItem.getY()) * iconSize) - itemImage.getYShift();
 
                                     finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
