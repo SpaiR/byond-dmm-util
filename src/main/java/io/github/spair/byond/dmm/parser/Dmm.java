@@ -3,6 +3,7 @@ package io.github.spair.byond.dmm.parser;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Data
+@Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
 public class Dmm implements Iterable<Tile> {
 
@@ -32,22 +34,19 @@ public class Dmm implements Iterable<Tile> {
         maxY = tiles.length;
     }
 
-    void setTile(final Tile tile, final int x, final int y) {
-        tiles[y - 1][x - 1] = tile;
+    public Tile getTile(final int x, final int y) {
+        if (hasTile(x, y)) {
+            return tiles[y - 1][x - 1];
+        }
+        throw new IllegalArgumentException("Nonexistent coordinates. X: " + x + ", Y: " + y);
     }
 
-    public final Tile getTile(final int x, final int y) {
-        if (x <= 0 || y <= 0) {
-            throw new IllegalArgumentException("Coordinates should not be lesser than zero. X: " + x + ", Y: " + y);
-        } else if (x > maxX || y > maxY) {
-            throw new IllegalArgumentException(
-                    "Nonexistent coordinates. X: " + x + ", Y: " + y + ". Max X: " + maxX + ", Max Y:" + maxY);
-        }
-        return tiles[y - 1][x - 1];
+    public TileInstance getTileInstance(final String key) {
+        return tileInstances.get(key);
     }
 
     public boolean hasTile(final int x, final int y) {
-        return x > 0 || x <= maxX || y > 0 || y <= maxY;
+        return x > 0 && x <= maxX && y > 0 && y <= maxY;
     }
 
     @Nonnull

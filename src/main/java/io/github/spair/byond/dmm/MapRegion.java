@@ -3,9 +3,12 @@ package io.github.spair.byond.dmm;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Setter;
 
 @Data
+@Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("WeakerAccess")
 public final class MapRegion {
 
     private int lowerX;

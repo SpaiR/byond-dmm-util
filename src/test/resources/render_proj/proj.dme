@@ -1,0 +1,11 @@
+#include "map.dmm"
+
+/area/simple
+	layer = 10
+	icon = 'area.dmi'
+
+/obj/item
+	icon = 'item.dmi'
+	
+/turf/floor
+	icon = 'floor.dmi'

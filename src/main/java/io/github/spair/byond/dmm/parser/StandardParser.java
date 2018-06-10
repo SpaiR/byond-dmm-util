@@ -81,7 +81,7 @@ class StandardParser implements MapParser {
             return mapMatcher.group(4);
         }
 
-        throw new IllegalArgumentException("Map was not found in file");
+        throw new IllegalArgumentException("No maps found in dmm");
     }
 
     protected Map<String, String> collectTiles(final String dmmText) {

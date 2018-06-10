@@ -83,9 +83,9 @@ final class TileItemRender {
     }
 
     private BufferedImage deepImageCopy(final BufferedImage img) {
-        ColorModel cm = img.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = img.copyData(null);
+        final ColorModel cm = img.getColorModel();
+        final WritableRaster raster = img.copyData(null);
+        final boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 }

@@ -40,6 +40,10 @@ public final class DmmRender {
         return renderToImage(dmm, MapRegion.of(0, 0, dmm.getMaxX(), dmm.getMaxY()), typesToIgnore);
     }
 
+    public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion) {
+        return renderToImage(dmm,mapRegion, Collections.emptySet());
+    }
+
     public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion, final String... typesToIgnore) {
         return renderToImage(dmm, mapRegion, new HashSet<>(Arrays.asList(typesToIgnore)));
     }

@@ -1,0 +1,9 @@
+"a" = (/turf/simple)
+"b" = (/turf/simple{icon_state = "turf"; dir = 1},/obj/item)
+"c" = (/turf/simple{contents = newlist(/obj/item,/obj/item/weapon)},/obj/item)
+
+(1,1,1) = {"
+aaa
+aba
+aca
+"}

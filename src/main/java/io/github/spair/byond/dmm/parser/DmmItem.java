@@ -4,22 +4,20 @@ import io.github.spair.byond.VarUtil;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Data
+@Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class DmmItem {
 
     private String type;
     private Map<String, String> vars = new HashMap<>();
-
-    public DmmItem(final String type) {
-        this.type = type;
-    }
 
     public void setVar(final String name, final String value) {
         vars.put(name, value);

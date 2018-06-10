@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("WeakerAccess")
 public final class DmmComparator {
 
     /**
@@ -16,7 +17,7 @@ public final class DmmComparator {
      *
      * @param dmmToCompare map {@link MapRegion} for which will be generated
      * @param dmmCompareWith map with which 'dmmToCompare' will be compared
-     * @return {@link MapRegion} with area where diffs found
+     * @return {@link MapRegion} with area where changes found
      */
     public static Optional<MapRegion> compare(final Dmm dmmToCompare, final Dmm dmmCompareWith) {
         List<Point> pointsOfDiffs = new ArrayList<>();

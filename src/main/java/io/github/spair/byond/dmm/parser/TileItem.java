@@ -13,7 +13,7 @@ import java.util.Optional;
 @Getter
 @ToString(exclude = "dmeItem")
 @EqualsAndHashCode
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class TileItem {
 
     @Getter(AccessLevel.NONE)

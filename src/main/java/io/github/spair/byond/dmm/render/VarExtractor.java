@@ -71,9 +71,9 @@ final class VarExtractor {
     private static String parseRGBColor(final String rgb) {
         Matcher rgbMatch = RGB_PATTERN.matcher(rgb);
         if (rgbMatch.find()) {
-            final int r = Integer.parseInt(rgbMatch.group(1));
-            final int g = Integer.parseInt(rgbMatch.group(2));
-            final int b = Integer.parseInt(rgbMatch.group(3));
+            final int r = Integer.parseInt(rgbMatch.group(1).trim());
+            final int g = Integer.parseInt(rgbMatch.group(2).trim());
+            final int b = Integer.parseInt(rgbMatch.group(3).trim());
             return String.format("#%02x%02x%02x", r, g, b);
         } else {
             return EMPTY_STRING;
