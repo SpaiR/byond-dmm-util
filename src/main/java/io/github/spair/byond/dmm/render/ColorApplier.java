@@ -1,8 +1,9 @@
 package io.github.spair.byond.dmm.render;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+@SuppressWarnings("MagicNumber")
 final class ColorApplier {
 
     static void apply(final Color color, final BufferedImage img) {

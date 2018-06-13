@@ -2,7 +2,11 @@ package io.github.spair.byond.dmm.parser;
 
 import io.github.spair.byond.dme.Dme;
 
-import java.io.*;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 @SuppressWarnings("WeakerAccess")
 public final class DmmParser {

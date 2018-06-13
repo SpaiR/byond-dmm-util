@@ -6,13 +6,22 @@ import io.github.spair.byond.dmm.parser.TileItem;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Objects;
+import java.util.Base64;
+import java.util.Iterator;
 
 @SuppressWarnings("WeakerAccess")
 public final class DmmRender {
@@ -52,7 +61,8 @@ public final class DmmRender {
         return renderToImage(dmm, mapRegion, new HashSet<>(Arrays.asList(typesToIgnore)));
     }
 
-    public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToIgnore) {
+    public static BufferedImage renderToImage(
+            final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToIgnore) {
         final DmmRender dmmRender = new DmmRender(dmm, mapRegion);
 
         dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);

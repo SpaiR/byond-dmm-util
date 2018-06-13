@@ -57,7 +57,7 @@ final class VarExtractor {
         if (colorValue.startsWith(RGB_PREFIX)) {
             return parseRGBColor(colorValue);
         }
-        return colorValue.substring(1, colorValue.length() -1);
+        return colorValue.substring(1, colorValue.length() - 1);
     }
 
     private static double evaluateMathExpressionIfExist(final String value) {
@@ -68,6 +68,7 @@ final class VarExtractor {
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     private static String parseRGBColor(final String rgb) {
         Matcher rgbMatch = RGB_PATTERN.matcher(rgb);
         if (rgbMatch.find()) {

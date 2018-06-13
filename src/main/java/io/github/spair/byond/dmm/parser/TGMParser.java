@@ -1,6 +1,10 @@
 package io.github.spair.byond.dmm.parser;
 
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 
 final class TGMParser extends StandardParser implements MapParser {
@@ -11,7 +15,8 @@ final class TGMParser extends StandardParser implements MapParser {
     }
 
     @Override
-    protected String collectMap(String dmmText) {
+    @SuppressWarnings("MagicNumber")
+    protected String collectMap(final String dmmText) {
         Matcher mapMatcher = MAP.matcher(dmmText);
         List<List<String>> columns = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 package io.github.spair.byond.dmm.render;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Optional;
 
 final class ColorParser {
@@ -43,7 +43,7 @@ final class ColorParser {
 
         private String hex;
 
-        ByondColor(String hex) {
+        ByondColor(final String hex) {
             this.hex = hex;
         }
 

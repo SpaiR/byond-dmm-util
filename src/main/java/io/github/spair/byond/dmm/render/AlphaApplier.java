@@ -2,6 +2,7 @@ package io.github.spair.byond.dmm.render;
 
 import java.awt.image.BufferedImage;
 
+@SuppressWarnings("MagicNumber")
 final class AlphaApplier {
 
     static void apply(final Integer alpha, final BufferedImage img) {

@@ -18,7 +18,7 @@ import java.util.Optional;
 final class TileItemRender {
 
     private String dmeRootPath;
-    private Map<String, Dmi> DMI_CACHE = new HashMap<>();
+    private Map<String, Dmi> dmiCache = new HashMap<>();
 
     TileItemRender(final String dmeRootPath) {
         this.dmeRootPath = dmeRootPath;
@@ -64,11 +64,11 @@ final class TileItemRender {
     }
 
     private Dmi getCachedDmi(final String itemIcon) {
-        if (DMI_CACHE.containsKey(itemIcon)) {
-            return DMI_CACHE.get(itemIcon);
+        if (dmiCache.containsKey(itemIcon)) {
+            return dmiCache.get(itemIcon);
         } else {
             Dmi dmi = DmiSlurper.slurpUp(new File(dmeRootPath + File.separatorChar + itemIcon));
-            DMI_CACHE.put(itemIcon, dmi);
+            dmiCache.put(itemIcon, dmi);
             return dmi;
         }
     }

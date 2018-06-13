@@ -25,12 +25,12 @@ class StandardParser implements MapParser {
 
     private static final Pattern ITEM_WITH_VAR = Pattern.compile("^(/.+)\\{(.*)}");
 
-    private Map<String, TileInstance> tileInstances;
+    private Map<String, TileInstance> tileInstances = new HashMap<>();
     private Pattern tileInstanceSplit;
 
     @Override
     public final Dmm parse(final String dmmText, final Dme dme) {
-        tileInstances = parseTiles(collectTiles(dmmText));
+        parseTiles(collectTiles(dmmText));
 
         if (tileInstances.isEmpty()) {
             throw new IllegalArgumentException("No tiles found");
@@ -74,6 +74,7 @@ class StandardParser implements MapParser {
         return dmm;
     }
 
+    @SuppressWarnings("MagicNumber")
     protected String collectMap(final String dmmText) {
         Matcher mapMatcher = MAP.matcher(dmmText);
 
@@ -95,9 +96,7 @@ class StandardParser implements MapParser {
         return tiles;
     }
 
-    private Map<String, TileInstance> parseTiles(final Map<String, String> tiles) {
-        Map<String, TileInstance> tileInstances = new HashMap<>();
-
+    private void parseTiles(final Map<String, String> tiles) {
         tiles.forEach((key, value) -> {
             TileInstance tileInstance = new TileInstance(key);
             String[] allItems = SPLIT_ITEM.split(value);
@@ -123,8 +122,6 @@ class StandardParser implements MapParser {
 
             tileInstances.put(key, tileInstance);
         });
-
-        return tileInstances;
     }
 
     private Tile[][] parseMapText(final String mapText) {

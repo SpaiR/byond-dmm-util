@@ -62,7 +62,7 @@ public final class DmmComparator {
         return decreasedValue > 0 ? decreasedValue : value;
     }
 
-    private static int increaseIfAble(final int value, int maxCap) {
+    private static int increaseIfAble(final int value, final int maxCap) {
         final int increasedValue = value + 1;
         return increasedValue <= maxCap ? increasedValue : value;
     }
@@ -72,7 +72,7 @@ public final class DmmComparator {
 
     @AllArgsConstructor
     private static final class Point {
-        int x;
-        int y;
+        private int x;
+        private int y;
     }
 }
