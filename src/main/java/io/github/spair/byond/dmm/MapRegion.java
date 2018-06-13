@@ -26,6 +26,10 @@ public final class MapRegion {
             throw new IllegalArgumentException("Lower point could not be the same or bigger than upper one."
                     + " Lower X: " + lowerX + ", lower Y: " + lowerY + ", upper X: " + upperX + ", upper Y: " + upperY);
         }
+        if (lowerX <= 0 || lowerY <= 0) {
+            throw new IllegalArgumentException("Lower point could not be lesser then 0."
+                    + " Lower X: " + lowerX + ", lower Y: " + lowerY);
+        }
         return new MapRegion(lowerX, lowerY, upperX, upperY);
     }
 }
