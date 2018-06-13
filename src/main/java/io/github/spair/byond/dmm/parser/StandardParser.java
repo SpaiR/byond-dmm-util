@@ -36,8 +36,7 @@ class StandardParser implements MapParser {
             throw new IllegalArgumentException("No tiles found");
         }
 
-        final int tileInstanceSize = tileInstances.keySet().iterator().next().length();
-        tileInstanceSplit = Pattern.compile(String.format("(?<=\\G.{%d})", tileInstanceSize));
+        computeTileInstanceSize();
 
         Dmm dmm = createDmm(collectMap(dmmText), dme);
         dmm.setTileInstances(tileInstances);
@@ -144,5 +143,10 @@ class StandardParser implements MapParser {
         }
 
         return tiles;
+    }
+
+    private void computeTileInstanceSize() {
+        final int tileInstanceSize = tileInstances.keySet().iterator().next().length();
+        tileInstanceSplit = Pattern.compile(String.format("(?<=\\G.{%d})", tileInstanceSize));
     }
 }
