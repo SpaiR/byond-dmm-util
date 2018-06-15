@@ -12,7 +12,6 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 final class TileItemRender {
@@ -35,7 +34,7 @@ final class TileItemRender {
         final Dmi itemDmi = getCachedDmi(itemIcon);
         final DmiSprite itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
 
-        if (Objects.isNull(itemSprite)) {  // TODO: maybe add placeholder for items without sprites?..
+        if (itemSprite == null) {  // TODO: maybe add placeholder for items without sprites?..
             return Optional.empty();
         }
 

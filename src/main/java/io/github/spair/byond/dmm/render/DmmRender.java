@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Objects;
 import java.util.Base64;
 import java.util.Iterator;
 
@@ -159,7 +158,7 @@ public final class DmmRender {
 
         Plane getPlane(final double planeValue) {
             Plane plane = planes.get(planeValue);
-            if (Objects.isNull(plane)) {
+            if (plane == null) {
                 plane = new Plane();
                 planes.put(planeValue, plane);
             }
@@ -178,7 +177,7 @@ public final class DmmRender {
 
         Layer getLayer(final double layerValue) {
             Layer layer = layers.get(layerValue);
-            if (Objects.isNull(layer)) {
+            if (layer == null) {
                 layer = new Layer();
                 layers.put(layerValue, layer);
             }
