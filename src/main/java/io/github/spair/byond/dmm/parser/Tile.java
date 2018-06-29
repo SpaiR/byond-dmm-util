@@ -1,14 +1,12 @@
 package io.github.spair.byond.dmm.parser;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(exclude = "tileInstance")
 @SuppressWarnings("WeakerAccess")
 public class Tile implements Iterable<TileItem> {
 
@@ -24,6 +22,10 @@ public class Tile implements Iterable<TileItem> {
         this.y = y;
         this.z = z;
         this.tileInstance = tileInstance;
+    }
+
+    public boolean hasSameObjects(final Tile tile) {
+        return tileInstance.getDmmItems().equals(tile.tileInstance.getDmmItems());
     }
 
     @Nonnull

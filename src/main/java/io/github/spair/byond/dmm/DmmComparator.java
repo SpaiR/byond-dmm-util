@@ -24,7 +24,8 @@ public final class DmmComparator {
 
         for (int x = 1; x <= dmmToCompare.getMaxX(); x++) {
             for (int y = 1; y <= dmmToCompare.getMaxY(); y++) {
-                if (!dmmCompareWith.hasTile(x, y) || !dmmToCompare.getTile(x, y).equals(dmmCompareWith.getTile(x, y))) {
+                if (!dmmCompareWith.hasTile(x, y)
+                        || !dmmToCompare.getTile(x, y).hasSameObjects(dmmCompareWith.getTile(x, y))) {
                     pointsOfDiffs.add(new Point(x, y));
                 }
             }
