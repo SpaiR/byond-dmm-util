@@ -19,13 +19,13 @@ Library deployed to Maven Central and JCenter repositories.
 <dependency>
     <groupId>io.github.spair</groupId>
     <artifactId>byond-dmm-util</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
 </dependency>
 ```
 
 #### build.gradle:
 ```
-compile 'io.github.spair:byond-dmm-util:0.1.2'
+compile 'io.github.spair:byond-dmm-util:0.1.3'
 ```
 
 ## How To Use
