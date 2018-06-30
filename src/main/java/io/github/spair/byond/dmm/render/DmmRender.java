@@ -25,18 +25,26 @@ import java.util.Iterator;
 @SuppressWarnings("WeakerAccess")
 public final class DmmRender {
 
-    private Planes planes;
-    private Dmm dmm;
-    private BufferedImage finalImage;
-    private MapRegion mapRegion;
+    private final Planes planes;
+    private final Dmm dmm;
+    private final BufferedImage finalImage;
+
+    private final int lowerX;
+    private final int lowerY;
+    private final int upperX;
+    private final int upperY;
 
     private DmmRender(final Dmm dmm, final MapRegion mapRegion) {
         this.dmm = dmm;
         this.planes = new Planes();
-        this.mapRegion = mapRegion;
 
-        final int width = (mapRegion.getUpperX() - mapRegion.getLowerX() + 1) * dmm.getIconSize();
-        final int height = (mapRegion.getUpperY() - mapRegion.getLowerY() + 1) * dmm.getIconSize();
+        this.lowerX = mapRegion.getLowerX();
+        this.lowerY = mapRegion.getLowerY();
+        this.upperX = mapRegion.getUpperXSafe(dmm.getMaxX());
+        this.upperY = mapRegion.getUpperYSafe(dmm.getMaxY());
+
+        final int width = (upperX - lowerY + 1) * dmm.getIconSize();
+        final int height = (upperY - lowerY + 1) * dmm.getIconSize();
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
@@ -113,6 +121,12 @@ public final class DmmRender {
                     planes.getPlane(itemPlane).getLayer(itemLayer).addItem(tileItem);
                 })
         );
+
+        planes.forEach(plane ->
+                plane.forEach(layer ->
+                        layer.items.sort(RenderPriority.COMPARATOR)
+                )
+        );
     }
 
     private boolean isIgnoredType(final TileItem item, final Set<String> typesToIgnore) {
@@ -125,17 +139,15 @@ public final class DmmRender {
     }
 
     private boolean notInBounds(final TileItem tileItem) {
-        return tileItem.getX() < mapRegion.getLowerX() || tileItem.getX() > mapRegion.getUpperX()
-                || tileItem.getY() < mapRegion.getLowerY() || tileItem.getY() > mapRegion.getUpperY();
+        return tileItem.getX() < lowerX || tileItem.getX() > upperX
+                || tileItem.getY() < lowerY || tileItem.getY() > upperY;
     }
 
     private void placeAllItemsOnImage() {
-        final TileItemRender itemRender = new TileItemRender(dmm.getDmeRootPath());
+        final TileItemRender itemRender = new TileItemRender(dmm.getIconSize(), dmm.getDmeRootPath());
         final Graphics finalCanvas = finalImage.getGraphics();
 
         final int iconSize = dmm.getIconSize();
-        final int lowerX = mapRegion.getLowerX();
-        final int upperY = mapRegion.getUpperY();
 
         planes.forEach(plane ->
                 plane.forEach(layer ->

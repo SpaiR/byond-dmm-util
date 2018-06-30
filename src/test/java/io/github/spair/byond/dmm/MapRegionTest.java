@@ -28,6 +28,27 @@ public class MapRegionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testOfWithException() {
-        MapRegion.of(10, 10);
+        MapRegion.of(0, 0);
+    }
+
+    @Test
+    public void testSinglePoint() {
+        MapRegion mapRegion = MapRegion.singlePoint(4, 4);
+
+        assertEquals(4, mapRegion.getLowerX());
+        assertEquals(4, mapRegion.getLowerY());
+        assertEquals(4, mapRegion.getUpperX());
+        assertEquals(4, mapRegion.getUpperY());
+    }
+
+    @Test
+    public void testExpandBoundsByOne() {
+        MapRegion mapRegion = MapRegion.singlePoint(5,5);
+        mapRegion.expandBoundsByOne();
+
+        assertEquals(4, mapRegion.getLowerX());
+        assertEquals(4, mapRegion.getLowerY());
+        assertEquals(6, mapRegion.getUpperX());
+        assertEquals(6, mapRegion.getUpperY());
     }
 }

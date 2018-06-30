@@ -16,10 +16,12 @@ import java.util.Optional;
 
 final class TileItemRender {
 
-    private String dmeRootPath;
+    private final int iconSize;
+    private final String dmeRootPath;
     private Map<String, Dmi> dmiCache = new HashMap<>();
 
-    TileItemRender(final String dmeRootPath) {
+    TileItemRender(final int iconSize, final String dmeRootPath) {
+        this.iconSize = iconSize;
         this.dmeRootPath = dmeRootPath;
     }
 
@@ -34,7 +36,7 @@ final class TileItemRender {
         final Dmi itemDmi = getCachedDmi(itemIcon);
         final DmiSprite itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
 
-        if (itemSprite == null) {  // TODO: maybe add placeholder for items without sprites?..
+        if (itemSprite == null) {  // TODO: add placeholder for items without sprites
             return Optional.empty();
         }
 
@@ -42,6 +44,13 @@ final class TileItemRender {
 
         itemImage.setXShift(VarExtractor.pixelX(item));
         itemImage.setYShift(VarExtractor.pixelY(item));
+
+        // BYOND renders objects from bottom to top, while DmmRender do it from top to bottom.
+        // This additional shift helps to properly render objects, which have sprite height more then world icon_size.
+        if (iconSize < itemDmi.getMetadata().getSpritesHeight()) {
+            itemImage.setYShift(itemImage.getYShift() + itemDmi.getMetadata().getSpritesHeight() - iconSize);
+        }
+
         itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
 
         applyColorValue(VarExtractor.color(item), itemImage.getImage());

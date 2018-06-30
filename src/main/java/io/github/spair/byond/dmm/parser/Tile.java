@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @SuppressWarnings("WeakerAccess")
@@ -25,7 +26,7 @@ public class Tile implements Iterable<TileItem> {
     }
 
     public boolean hasSameObjects(final Tile tile) {
-        return tileInstance.getDmmItems().equals(tile.tileInstance.getDmmItems());
+        return Objects.equals(tileInstance.getDmmItems(), tile.tileInstance.getDmmItems());
     }
 
     @Nonnull
