@@ -156,10 +156,9 @@ public final class DmmRender {
     }
 
     private void placeAllItemsOnImage() {
-        final TileItemRender itemRender = new TileItemRender(dmm.getIconSize(), dmm.getDmeRootPath());
-        final Graphics finalCanvas = finalImage.getGraphics();
-
         final int iconSize = dmm.getIconSize();
+        final TileItemRender itemRender = new TileItemRender(iconSize, dmm.getDmeRootPath());
+        final Graphics finalCanvas = finalImage.getGraphics();
 
         planes.forEach(plane ->
                 plane.forEach(layer ->
