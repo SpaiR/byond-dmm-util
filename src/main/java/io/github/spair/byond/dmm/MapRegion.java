@@ -39,19 +39,8 @@ public final class MapRegion {
         return MapRegion.of(x, y, x, y);
     }
 
-    public void expandBoundsByOne() {
-        lowerX = Math.max(1, lowerX - 1);
-        lowerY = Math.max(1, lowerY - 1);
-        upperX += 1;
-        upperY += 1;
-    }
-
-    public int getUpperXSafe(final int xCap) {
-        return Math.min(upperX, xCap);
-    }
-
-    public int getUpperYSafe(final int yCap) {
-        return Math.min(upperY, yCap);
+    public boolean isSinglePoint() {
+        return lowerX == upperX && lowerY == upperY;
     }
 
     boolean isInBounds(final int x, final int y) {

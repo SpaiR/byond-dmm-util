@@ -38,10 +38,22 @@ public final class DmmRender {
         this.dmm = dmm;
         this.planes = new Planes();
 
-        this.lowerX = mapRegion.getLowerX();
-        this.lowerY = mapRegion.getLowerY();
-        this.upperX = mapRegion.getUpperXSafe(dmm.getMaxX());
-        this.upperY = mapRegion.getUpperYSafe(dmm.getMaxY());
+        int minX = mapRegion.getLowerX();
+        int minY = mapRegion.getLowerY();
+        int maxX = mapRegion.getUpperX();
+        int maxY = mapRegion.getUpperY();
+
+        if (mapRegion.isSinglePoint()) {
+            minX = Math.max(1, minX - 1);
+            minY = Math.max(1, minY - 1);
+            maxX = Math.min(dmm.getMaxX(), maxX + 1);
+            maxY = Math.min(dmm.getMaxY(), maxY + 1);
+        }
+
+        this.lowerX = minX;
+        this.lowerY = minY;
+        this.upperX = maxX;
+        this.upperY = maxY;
 
         final int width = (upperX - lowerY + 1) * dmm.getIconSize();
         final int height = (upperY - lowerY + 1) * dmm.getIconSize();

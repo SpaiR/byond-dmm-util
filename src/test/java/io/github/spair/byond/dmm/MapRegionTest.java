@@ -40,15 +40,4 @@ public class MapRegionTest {
         assertEquals(4, mapRegion.getUpperX());
         assertEquals(4, mapRegion.getUpperY());
     }
-
-    @Test
-    public void testExpandBoundsByOne() {
-        MapRegion mapRegion = MapRegion.singlePoint(5,5);
-        mapRegion.expandBoundsByOne();
-
-        assertEquals(4, mapRegion.getLowerX());
-        assertEquals(4, mapRegion.getLowerY());
-        assertEquals(6, mapRegion.getUpperX());
-        assertEquals(6, mapRegion.getUpperY());
-    }
 }
