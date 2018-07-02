@@ -55,7 +55,7 @@ public final class DmmRender {
         this.upperX = maxX;
         this.upperY = maxY;
 
-        final int width = (upperX - lowerY + 1) * dmm.getIconSize();
+        final int width = (upperX - lowerX + 1) * dmm.getIconSize();
         final int height = (upperY - lowerY + 1) * dmm.getIconSize();
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
