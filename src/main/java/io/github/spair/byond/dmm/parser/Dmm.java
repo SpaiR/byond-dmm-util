@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -12,10 +13,12 @@ import java.util.NoSuchElementException;
 
 @Data
 @Setter(AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
 public class Dmm implements Iterable<Tile> {
 
     public static final int DEFAULT_ICON_SIZE = 32;
+    public static final Dmm EMPTY_MAP = new Dmm();
 
     private Map<String, TileInstance> tileInstances;
 
