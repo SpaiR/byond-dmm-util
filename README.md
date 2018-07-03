@@ -37,8 +37,7 @@ taken from [byond-dme-parser](https://github.com/SpaiR/byond-dme-parser) library
 
 ### DmmRender
 
-Renders `Dmm` object into `BufferedImage` or into `String` object in base64 format. Has ability to render specific region
-of map or apply object filter to exclude it from render result. For example: 
+Renders `Dmm` object into `BufferedImage`. Has ability to render specific region of map or apply object filter to exclude it from render result. For example: 
 ```
 DmmRender.renderToImage(dmm, MapRegion.of(1, 5), "/area", "/turf")
 ```
