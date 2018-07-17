@@ -79,8 +79,14 @@ public final class DmmRender {
             final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToIgnore) {
         final DmmRender dmmRender = new DmmRender(dmm, mapRegion);
 
-        dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);
-        dmmRender.placeAllItemsOnImage();
+        try {
+            dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);
+            dmmRender.placeAllItemsOnImage();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to render dmm image."
+                    + " Dme root path: " + dmm.getDmeRootPath() + " Map region: " + mapRegion
+                    + " Types to ignore: " + typesToIgnore);
+        }
 
         return dmmRender.finalImage;
     }

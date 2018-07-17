@@ -14,16 +14,20 @@ public final class DmmParser {
     private static final String DMM_SUFFIX = ".dmm";
 
     public static Dmm parse(final File dmmFile, final Dme dme) {
-        if (dmmFile.isFile() && dmmFile.getName().endsWith(DMM_SUFFIX)) {
-            final String dmmText = readFile(dmmFile);
+        try {
+            if (dmmFile.isFile() && dmmFile.getName().endsWith(DMM_SUFFIX)) {
+                final String dmmText = readFile(dmmFile);
 
-            if (dmmText.isEmpty()) {
-                throw new IllegalArgumentException("File could not be empty");
+                if (dmmText.isEmpty()) {
+                    throw new IllegalArgumentException("File could not be empty");
+                }
+
+                return ParserFactory.createFromText(dmmText).parse(dmmText, dme);
+            } else {
+                throw new IllegalArgumentException("Parser only accept '.dmm' files");
             }
-
-            return ParserFactory.createFromText(dmmText).parse(dmmText, dme);
-        } else {
-            throw new IllegalArgumentException("Parser only accept '.dmm' files");
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to parse dmm file. File path: " + dmmFile.getPath());
         }
     }
 
