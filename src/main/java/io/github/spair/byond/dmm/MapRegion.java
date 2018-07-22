@@ -1,13 +1,11 @@
 package io.github.spair.byond.dmm;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
 
 @Data
 @Setter(AccessLevel.PACKAGE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings("WeakerAccess")
 public final class MapRegion {
 
@@ -18,6 +16,18 @@ public final class MapRegion {
 
     private int upperX;
     private int upperY;
+
+    private int width;
+    private int height;
+
+    private MapRegion(final int lowerX, final int lowerY, final int upperX, final int upperY) {
+        this.lowerX = lowerX;
+        this.lowerY = lowerY;
+        this.upperX = upperX;
+        this.upperY = upperY;
+        calculateWidth();
+        calculateHeight();
+    }
 
     public static MapRegion of(final int lowerPoint, final int upperPoint) {
         return of(lowerPoint, lowerPoint, upperPoint, upperPoint);
@@ -73,6 +83,9 @@ public final class MapRegion {
         if (!xBoundsChanged && !yBoundsChanged) {
             throw new IllegalArgumentException("Args are not in bounds of region. X: " + x + " Y:" + y);
         }
+
+        calculateWidth();
+        calculateHeight();
     }
 
     private boolean isInBoundsOfLowerX(final int x) {
@@ -89,5 +102,13 @@ public final class MapRegion {
 
     private boolean isInBoundsOfUpperY(final int y) {
         return y - upperY <= EXPAND_DISTANCE;
+    }
+
+    private void calculateWidth() {
+        width = Math.max(upperX - lowerX, 1);
+    }
+
+    private void calculateHeight() {
+        height = Math.max(upperY - lowerY, 1);
     }
 }

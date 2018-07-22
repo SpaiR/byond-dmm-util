@@ -14,16 +14,22 @@ public class MapRegionTest {
         assertEquals(10, mapRegion.getLowerY());
         assertEquals(20, mapRegion.getUpperX());
         assertEquals(20, mapRegion.getUpperY());
+
+        assertEquals(10, mapRegion.getWidth());
+        assertEquals(10, mapRegion.getHeight());
     }
 
     @Test
     public void testOfWithFullArgs() {
-        MapRegion mapRegion = MapRegion.of(10, 15, 20, 25);
+        MapRegion mapRegion = MapRegion.of(10, 15, 15, 25);
 
         assertEquals(10, mapRegion.getLowerX());
         assertEquals(15, mapRegion.getLowerY());
-        assertEquals(20, mapRegion.getUpperX());
+        assertEquals(15, mapRegion.getUpperX());
         assertEquals(25, mapRegion.getUpperY());
+
+        assertEquals(5, mapRegion.getWidth());
+        assertEquals(10, mapRegion.getHeight());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -39,5 +45,8 @@ public class MapRegionTest {
         assertEquals(4, mapRegion.getLowerY());
         assertEquals(4, mapRegion.getUpperX());
         assertEquals(4, mapRegion.getUpperY());
+
+        assertEquals(1, mapRegion.getWidth());
+        assertEquals(1, mapRegion.getHeight());
     }
 }
