@@ -6,6 +6,7 @@ import io.github.spair.byond.dmm.parser.TileItem;
 
 import javax.annotation.Nonnull;
 import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.Set;
@@ -91,6 +92,22 @@ public final class DmmRender {
         return dmmRender.finalImage;
     }
 
+    public static BufferedImage renderDiffPoints(final Dmm dmm, final MapRegion mapRegion) {
+        final MapRegion region = MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY());
+        region.addDiffPoint(mapRegion.getDiffPoints());
+
+        final DmmRender dmmRender = new DmmRender(dmm, region);
+
+        try {
+            dmmRender.drawDiffPoints(region);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to render dmm image."
+                    + " Dme root path: " + dmm.getDmeRootPath() + " Map region: " + region);
+        }
+
+        return dmmRender.finalImage;
+    }
+
     private void distributeToSortedPlanesAndLayers(final Set<String> typesToIgnore) {
         dmm.forEach(tile ->
                 tile.forEach(tileItem -> {
@@ -143,6 +160,23 @@ public final class DmmRender {
                         )
                 )
         );
+
+        finalCanvas.dispose();
+    }
+
+    private void drawDiffPoints(final MapRegion mapRegion) {
+        final int iconSize = dmm.getIconSize();
+        final Graphics finalCanvas = finalImage.getGraphics();
+
+        finalCanvas.setColor(Color.RED);
+
+        mapRegion.getDiffPoints().forEach(diffPoint -> {
+            int xPos = (diffPoint.getX() - lowerX) * iconSize;
+            int yPos = (upperY - diffPoint.getY()) * iconSize;
+
+            finalCanvas.drawRect(xPos, yPos, iconSize, iconSize);
+            finalCanvas.fillRect(xPos, yPos, iconSize, iconSize);
+        });
 
         finalCanvas.dispose();
     }
