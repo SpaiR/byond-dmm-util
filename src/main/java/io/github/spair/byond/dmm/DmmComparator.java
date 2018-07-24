@@ -1,7 +1,6 @@
 package io.github.spair.byond.dmm;
 
 import io.github.spair.byond.dmm.parser.Dmm;
-import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +21,9 @@ public final class DmmComparator {
      * @return {@link MapRegion} with area where changes found
      */
     public static Optional<MapRegion> compare(final Dmm dmmToCompare, final Dmm dmmCompareWith) {
-        List<Point> pointsOfDiffs = findPointsOfDifference(dmmToCompare, dmmCompareWith);
+        List<DiffPoint> diffPoints = findDiffPoints(dmmToCompare, dmmCompareWith);
 
-        if (pointsOfDiffs.isEmpty()) {
+        if (diffPoints.isEmpty()) {
             return Optional.empty();
         }
 
@@ -33,14 +32,14 @@ public final class DmmComparator {
         int upperX = Integer.MIN_VALUE;
         int upperY = Integer.MIN_VALUE;
 
-        for (Point point : pointsOfDiffs) {
-            lowerX = Math.min(lowerX, point.x);
-            lowerY = Math.min(lowerY, point.y);
-            upperX = Math.max(upperX, point.x);
-            upperY = Math.max(upperY, point.y);
+        for (DiffPoint diffPoint : diffPoints) {
+            lowerX = Math.min(lowerX, diffPoint.getX());
+            lowerY = Math.min(lowerY, diffPoint.getY());
+            upperX = Math.max(upperX, diffPoint.getX());
+            upperY = Math.max(upperY, diffPoint.getY());
         }
 
-        return Optional.of(MapRegion.of(lowerX, lowerY, upperX, upperY));
+        return Optional.of(MapRegion.of(lowerX, lowerY, upperX, upperY).addDiffPoint(diffPoints));
     }
 
     /**
@@ -55,20 +54,20 @@ public final class DmmComparator {
      * @return list of {@link MapRegion} with areas of changes
      */
     public static Optional<List<MapRegion>> compareByChunks(final Dmm dmmToCompare, final Dmm dmmCompareWith) {
-        List<Point> pointsOfDiffs = findPointsOfDifference(dmmToCompare, dmmCompareWith);
+        List<DiffPoint> diffPoints = findDiffPoints(dmmToCompare, dmmCompareWith);
 
-        if (pointsOfDiffs.isEmpty()) {
+        if (diffPoints.isEmpty()) {
             return Optional.empty();
         }
 
         List<MapRegion> chunks = new ArrayList<>();
 
-        for (Point point : pointsOfDiffs) {
-            final int x = point.x;
-            final int y = point.y;
+        for (DiffPoint diffPoint : diffPoints) {
+            final int x = diffPoint.getX();
+            final int y = diffPoint.getY();
 
             if (chunks.isEmpty()) {
-                chunks.add(MapRegion.singlePoint(x, y));
+                chunks.add(MapRegion.singlePoint(x, y).addDiffPoint(diffPoint));
                 continue;
             }
 
@@ -77,40 +76,36 @@ public final class DmmComparator {
             for (MapRegion chunk : chunks) {
                 if (chunk.isInBounds(x, y)) {
                     chunk.expandBounds(x, y);
+                    chunk.addDiffPoint(diffPoint);
                     isExpanded = true;
                     break;
                 }
             }
 
             if (!isExpanded) {
-                chunks.add(MapRegion.singlePoint(x, y));
+                chunks.add(MapRegion.singlePoint(x, y).addDiffPoint(diffPoint));
             }
         }
 
         return Optional.of(chunks);
     }
 
-    private static List<Point> findPointsOfDifference(final Dmm dmmToCompare, final Dmm dmmCompareWith) {
-        List<Point> pointsOfDiffs = new ArrayList<>();
+    private static List<DiffPoint> findDiffPoints(final Dmm dmmToCompare, final Dmm dmmCompareWith) {
+        List<DiffPoint> diffPoints = new ArrayList<>();
 
         for (int x = 1; x <= dmmToCompare.getMaxX(); x++) {
             for (int y = 1; y <= dmmToCompare.getMaxY(); y++) {
                 if (!dmmCompareWith.hasTile(x, y)
                         || !dmmToCompare.getTile(x, y).hasSameObjects(dmmCompareWith.getTile(x, y))) {
-                    pointsOfDiffs.add(new Point(x, y));
+                    diffPoints.add(DiffPoint.of(x, y));
                 }
             }
         }
 
-        return pointsOfDiffs;
+        return diffPoints;
     }
 
     private DmmComparator() {
     }
 
-    @AllArgsConstructor
-    private static final class Point {
-        private int x;
-        private int y;
-    }
 }

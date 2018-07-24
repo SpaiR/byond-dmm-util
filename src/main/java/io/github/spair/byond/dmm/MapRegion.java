@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
@@ -20,11 +24,16 @@ public final class MapRegion {
     private int width;
     private int height;
 
+    private Set<DiffPoint> diffPoints;
+
     private MapRegion(final int lowerX, final int lowerY, final int upperX, final int upperY) {
         this.lowerX = lowerX;
         this.lowerY = lowerY;
         this.upperX = upperX;
         this.upperY = upperY;
+
+        this.diffPoints = new HashSet<>();
+
         calculateWidth();
         calculateHeight();
     }
@@ -51,6 +60,21 @@ public final class MapRegion {
 
     public boolean isSinglePoint() {
         return lowerX == upperX && lowerY == upperY;
+    }
+
+    public MapRegion addDiffPoint(final DiffPoint diffPoint) {
+        diffPoints.add(diffPoint);
+        return this;
+    }
+
+    public MapRegion addDiffPoint(final Collection<DiffPoint> diffPoints) {
+        this.diffPoints.addAll(diffPoints);
+        return this;
+    }
+
+    public MapRegion addDiffPoint(final int x, final int y) {
+        this.diffPoints.add(DiffPoint.of(x, y));
+        return this;
     }
 
     boolean isInBounds(final int x, final int y) {

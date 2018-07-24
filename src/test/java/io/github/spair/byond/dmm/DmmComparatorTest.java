@@ -35,7 +35,9 @@ public class DmmComparatorTest {
         Optional<MapRegion> diffRegion = DmmComparator.compare(orig, mod);
 
         assertTrue(diffRegion.isPresent());
-        assertEquals(MapRegion.of(3, 2, 3, 2), diffRegion.get());
+        assertEquals(
+                MapRegion.of(3, 2, 3, 2).addDiffPoint(3, 2), diffRegion.get()
+        );
     }
 
     @Test
@@ -49,9 +51,16 @@ public class DmmComparatorTest {
 
         List<MapRegion> chunks = diffRegions.get();
 
-        assertEquals(MapRegion.of(1, 2, 4, 8), chunks.get(0));
-        assertEquals(MapRegion.of(4, 23, 4, 23), chunks.get(1));
-        assertEquals(MapRegion.of(19, 2, 25, 9), chunks.get(2));
-        assertEquals(MapRegion.of(25, 26, 26, 27), chunks.get(3));
+        assertEquals(
+                MapRegion.of(1, 2, 4, 8).addDiffPoint(1, 2).addDiffPoint(4, 8), chunks.get(0)
+        );
+        assertEquals(MapRegion.of(4, 23, 4, 23).addDiffPoint(4, 23), chunks.get(1));
+        assertEquals(
+                MapRegion.of(19, 2, 25, 9)
+                        .addDiffPoint(25, 5).addDiffPoint(22, 9).addDiffPoint(22, 2).addDiffPoint(19, 4),
+                chunks.get(2)
+        );
+        assertEquals(MapRegion.of(25, 26, 26, 27)
+                .addDiffPoint(26, 26).addDiffPoint(26, 27).addDiffPoint(25, 26).addDiffPoint(25, 27), chunks.get(3));
     }
 }
