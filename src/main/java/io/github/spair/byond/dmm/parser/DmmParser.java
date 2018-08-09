@@ -1,6 +1,8 @@
 package io.github.spair.byond.dmm.parser;
 
 import io.github.spair.byond.dme.Dme;
+import io.github.spair.byond.dmm.Dmm;
+import lombok.val;
 
 import java.io.File;
 import java.io.BufferedReader;
@@ -15,24 +17,24 @@ public final class DmmParser {
 
     public static Dmm parse(final File dmmFile, final Dme dme) {
         try {
-            if (dmmFile.isFile() && dmmFile.getName().endsWith(DMM_SUFFIX)) {
-                final String dmmText = readFile(dmmFile);
-
-                if (dmmText.isEmpty()) {
-                    throw new IllegalArgumentException("File could not be empty");
-                }
-
-                return ParserFactory.createFromText(dmmText).parse(dmmText, dme);
-            } else {
+            if (!dmmFile.isFile() || !dmmFile.getName().endsWith(DMM_SUFFIX)) {
                 throw new IllegalArgumentException("Parser only accept '.dmm' files");
             }
+
+            val dmmText = readFile(dmmFile);
+
+            if (dmmText.isEmpty()) {
+                throw new IllegalArgumentException("File could not be empty");
+            }
+
+            return ParserFactory.createFromText(dmmText).parse(dmmText, dme);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to parse dmm file. File path: " + dmmFile.getPath());
+            throw new RuntimeException("Unable to parse dmm file. File path: " + dmmFile.getPath(), e);
         }
     }
 
     private static String readFile(final File dmmFile) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(dmmFile))) {
+        try (val reader = new BufferedReader(new FileReader(dmmFile))) {
             StringBuilder builder = new StringBuilder();
             reader.lines().forEach(line -> builder.append(line.trim()).append('\n'));
             return builder.toString();

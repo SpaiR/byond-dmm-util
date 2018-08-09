@@ -4,7 +4,7 @@ import io.github.spair.byond.dmi.Dmi;
 import io.github.spair.byond.dmi.DmiSlurper;
 import io.github.spair.byond.dmi.DmiSprite;
 import io.github.spair.byond.dmi.SpriteDir;
-import io.github.spair.byond.dmm.parser.TileItem;
+import io.github.spair.byond.dmm.TileItem;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;

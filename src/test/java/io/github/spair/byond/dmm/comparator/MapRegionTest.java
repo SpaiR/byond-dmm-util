@@ -1,5 +1,6 @@
-package io.github.spair.byond.dmm;
+package io.github.spair.byond.dmm.comparator;
 
+import io.github.spair.byond.dmm.comparator.MapRegion;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

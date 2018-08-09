@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.parser;
+package io.github.spair.byond.dmm;
 
 import io.github.spair.byond.VarUtil;
 import io.github.spair.byond.dme.DmeItem;
@@ -22,7 +22,8 @@ public class TileItem {
     private int x, y, z;
     private Map<String, String> customVars;
 
-    TileItem(final int x, final int y, final int z, final DmeItem dmeItem, final Map<String, String> customVars) {
+    public TileItem(
+            final int x, final int y, final int z, final DmeItem dmeItem, final Map<String, String> customVars) {
         this.x = x;
         this.y = y;
         this.z = z;

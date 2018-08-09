@@ -1,6 +1,6 @@
-package io.github.spair.byond.dmm;
+package io.github.spair.byond.dmm.comparator;
 
-import io.github.spair.byond.dmm.parser.Dmm;
+import io.github.spair.byond.dmm.Dmm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +43,11 @@ public final class DmmComparator {
     }
 
     /**
-     * Method to compare two {@link Dmm}'s and get list {@link MapRegion} with areas of changes.
+     * Method to compare two {@link Dmm}'s and get list of {@link MapRegion} with areas of changes.
      * Since maps could have different sizes,
      * generated list shows difference only in context of first argument.
      * <p>Unlike {@link #compare(Dmm, Dmm)} returns list of regions,
-     * which could show map differences more accurate.
+     * which could show map differences more accurately.
      *
      * @param dmmToCompare   map {@link MapRegion} for which will be generated
      * @param dmmCompareWith map with which 'dmmToCompare' will be compared

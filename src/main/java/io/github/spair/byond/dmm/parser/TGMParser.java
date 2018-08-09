@@ -17,11 +17,11 @@ final class TGMParser extends StandardParser implements MapParser {
     @Override
     @SuppressWarnings("MagicNumber")
     protected String collectMap(final String dmmText) {
-        Matcher mapMatcher = MAP.matcher(dmmText);
+        Matcher mapMatcher = patternHolder.mapMatcher(dmmText);
         List<List<String>> columns = new ArrayList<>();
 
         while (mapMatcher.find()) {
-            String[] rows = SPLIT_NEW_LINE.split(mapMatcher.group(4));
+            String[] rows = patternHolder.splitNewLine(mapMatcher.group(4));
 
             if (columns.isEmpty()) {
                 Arrays.stream(rows).<List<String>>map(r -> new ArrayList<>()).forEach(columns::add);

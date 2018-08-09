@@ -1,8 +1,8 @@
 package io.github.spair.byond.dmm.render;
 
-import io.github.spair.byond.dmm.MapRegion;
-import io.github.spair.byond.dmm.parser.Dmm;
-import io.github.spair.byond.dmm.parser.TileItem;
+import io.github.spair.byond.dmm.comparator.MapRegion;
+import io.github.spair.byond.dmm.Dmm;
+import io.github.spair.byond.dmm.TileItem;
 
 import javax.annotation.Nonnull;
 import java.awt.Graphics;

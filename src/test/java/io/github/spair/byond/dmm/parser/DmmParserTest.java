@@ -3,7 +3,10 @@ package io.github.spair.byond.dmm.parser;
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dme.DmeItem;
+import io.github.spair.byond.dmm.Dmm;
+import io.github.spair.byond.dmm.DmmItem;
 import io.github.spair.byond.dmm.ResourceUtil;
+import io.github.spair.byond.dmm.TileInstance;
 import org.junit.Before;
 import org.junit.Test;
 

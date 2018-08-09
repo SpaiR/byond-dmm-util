@@ -3,6 +3,11 @@ package io.github.spair.byond.dmm.parser;
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dme.Dme;
+import io.github.spair.byond.dmm.Dmm;
+import io.github.spair.byond.dmm.DmmItem;
+import io.github.spair.byond.dmm.Tile;
+import io.github.spair.byond.dmm.TileItem;
+import io.github.spair.byond.dmm.TileInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,17 +18,8 @@ import java.util.regex.Pattern;
 
 class StandardParser implements MapParser {
 
-    private static final Pattern TILE = Pattern.compile("\"(\\w+)\"\\s=\\s\\((.*)\\)\n");
-
-    private static final Pattern SPLIT_ITEM = Pattern.compile("(,|^)(?=/)(?![^{]*[}])");
-    private static final Pattern SPLIT_VARS = Pattern.compile(";\\s?(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-    private static final Pattern SPLIT_VAR = Pattern.compile("\\s=\\s");
-
-    static final Pattern SPLIT_NEW_LINE = Pattern.compile("\n");
-    static final Pattern MAP =
-            Pattern.compile("\\((\\d+?),(\\d+?),(\\d+?)\\)\\s=\\s\\{\"\\s*([\\na-zA-Z]+)\\s*\"}");
-
-    private static final Pattern ITEM_WITH_VAR = Pattern.compile("^(/.+)\\{(.*)}");
+    @SuppressWarnings("checkstyle:VisibilityModifier")
+    final PatternHolder patternHolder = new PatternHolder();
 
     private Map<String, TileInstance> tileInstances = new HashMap<>();
     private Pattern tileInstanceSplit;
@@ -75,7 +71,7 @@ class StandardParser implements MapParser {
 
     @SuppressWarnings("MagicNumber")
     protected String collectMap(final String dmmText) {
-        Matcher mapMatcher = MAP.matcher(dmmText);
+        Matcher mapMatcher = patternHolder.mapMatcher(dmmText);
 
         if (mapMatcher.find()) {
             return mapMatcher.group(4);
@@ -85,7 +81,7 @@ class StandardParser implements MapParser {
     }
 
     protected Map<String, String> collectTiles(final String dmmText) {
-        Matcher tileMatcher = TILE.matcher(dmmText);
+        Matcher tileMatcher = patternHolder.tileMatcher(dmmText);
         Map<String, String> tiles = new HashMap<>();
 
         while (tileMatcher.find()) {
@@ -98,18 +94,18 @@ class StandardParser implements MapParser {
     private void parseTiles(final Map<String, String> tiles) {
         tiles.forEach((key, value) -> {
             TileInstance tileInstance = new TileInstance(key);
-            String[] allItems = SPLIT_ITEM.split(value);
+            String[] allItems = patternHolder.splitItem(value);
 
             for (String item : allItems) {
                 DmmItem dmmItem = new DmmItem();
-                Matcher itemWithVar = ITEM_WITH_VAR.matcher(item);
+                Matcher itemWithVar = patternHolder.itemWithVarMatcher(item);
 
                 if (itemWithVar.find()) {
                     dmmItem.setType(itemWithVar.group(1));
-                    String[] vars = SPLIT_VARS.split(itemWithVar.group(2));
+                    String[] vars = patternHolder.splitVars(itemWithVar.group(2));
 
                     for (String varDefinition : vars) {
-                        String[] splittedVarDefinition = SPLIT_VAR.split(varDefinition);
+                        String[] splittedVarDefinition = patternHolder.splitVar(varDefinition);
                         dmmItem.setVar(splittedVarDefinition[0], splittedVarDefinition[1]);
                     }
                 } else {
@@ -124,7 +120,7 @@ class StandardParser implements MapParser {
     }
 
     private Tile[][] parseMapText(final String mapText) {
-        String[] mapLines = SPLIT_NEW_LINE.split(mapText);
+        String[] mapLines = patternHolder.splitNewLine(mapText);
         final int maxY = mapLines.length;
         final int maxX = tileInstanceSplit.split(mapLines[0]).length;
         Tile[][] tiles = new Tile[maxY][maxX];

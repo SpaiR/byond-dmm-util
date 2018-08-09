@@ -1,7 +1,7 @@
 package io.github.spair.byond.dmm.render;
 
 import io.github.spair.byond.dmi.SpriteDir;
-import io.github.spair.byond.dmm.parser.TileItemFactory;
+import io.github.spair.byond.dmm.TileItemFactory;
 import org.junit.Test;
 
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package io.github.spair.byond.dmm.render;
 
 import io.github.spair.byond.ByondTypes;
-import io.github.spair.byond.dmm.parser.TileItem;
+import io.github.spair.byond.dmm.TileItem;
 
 import java.util.Comparator;
 

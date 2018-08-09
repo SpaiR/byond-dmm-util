@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmm.parser;
 
 import io.github.spair.byond.dme.Dme;
+import io.github.spair.byond.dmm.Dmm;
 
 interface MapParser {
 

@@ -1,9 +1,8 @@
-package io.github.spair.byond.dmm.parser;
+package io.github.spair.byond.dmm;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import javax.annotation.Nonnull;
@@ -12,8 +11,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Data
-@Setter(AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @SuppressWarnings("WeakerAccess")
 public class Dmm implements Iterable<Tile> {
 
@@ -31,7 +29,7 @@ public class Dmm implements Iterable<Tile> {
     private int maxX;
     private int maxY;
 
-    void setTiles(final Tile[][] tiles) {
+    public void setTiles(final Tile[][] tiles) {
         this.tiles = tiles;
         maxX = tiles[0].length;
         maxY = tiles.length;

@@ -1,18 +1,15 @@
-package io.github.spair.byond.dmm.parser;
+package io.github.spair.byond.dmm;
 
 import io.github.spair.byond.VarUtil;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Data
-@Setter(AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class DmmItem {
 

@@ -1,9 +1,10 @@
-package io.github.spair.byond.dmm;
+package io.github.spair.byond.dmm.comparator;
 
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dme.DmeItem;
-import io.github.spair.byond.dmm.parser.Dmm;
+import io.github.spair.byond.dmm.ResourceUtil;
+import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.parser.DmmParser;
 import org.junit.Before;
 import org.junit.Test;

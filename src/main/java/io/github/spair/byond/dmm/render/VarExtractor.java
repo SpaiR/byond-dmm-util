@@ -3,7 +3,7 @@ package io.github.spair.byond.dmm.render;
 import com.udojava.evalex.Expression;
 import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dmi.SpriteDir;
-import io.github.spair.byond.dmm.parser.TileItem;
+import io.github.spair.byond.dmm.TileItem;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

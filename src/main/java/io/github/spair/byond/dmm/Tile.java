@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.parser;
+package io.github.spair.byond.dmm;
 
 import lombok.Data;
 
