@@ -5,11 +5,13 @@ import io.github.spair.byond.dmi.DmiSlurper;
 import io.github.spair.byond.dmi.DmiSprite;
 import io.github.spair.byond.dmi.SpriteDir;
 import io.github.spair.byond.dmm.TileItem;
+import lombok.val;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -53,21 +55,45 @@ final class TileItemRender {
 
         itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
 
-        applyColorValue(VarExtractor.color(item), itemImage.getImage());
-        applyAlphaValue(VarExtractor.alpha(item), itemImage.getImage());
+        applyPixelEffects(item, itemImage.getImage());
 
         return Optional.of(itemImage);
     }
 
-    private void applyColorValue(final String colorValue, final BufferedImage img) {
-        if (!colorValue.isEmpty()) {
-            ColorParser.parse(colorValue).ifPresent(color -> ColorApplier.apply(color, img));
-        }
-    }
+    private void applyPixelEffects(final TileItem item, final BufferedImage img) {
+        val colorValue = VarExtractor.color(item);
+        val alphaValue = VarExtractor.alpha(item);
 
-    private void applyAlphaValue(final int alphaValue, final BufferedImage img) {
-        if (alphaValue != VarExtractor.DEFAULT_ALPHA) {
-            AlphaApplier.apply(alphaValue, img);
+        val hasColor = !colorValue.isEmpty();
+        val notDefaultAlpha = alphaValue != VarExtractor.DEFAULT_ALPHA;
+
+        val effectsToApply = new ArrayList<PixelEffect>();
+
+        if (hasColor) {
+            ColorParser.parse(colorValue).ifPresent(color -> effectsToApply.add(new ColorPixelEffect(color)));
+        }
+        if (notDefaultAlpha) {
+            effectsToApply.add(new AlphaPixelEffect(alphaValue));
+        }
+
+        if (effectsToApply.isEmpty()) {
+            return;
+        }
+
+        for (int x = 0; x < img.getWidth(); x++) {
+            for (int y = 0; y < img.getHeight(); y++) {
+                int pixel = img.getRGB(x, y);
+
+                if (pixel == 0) {
+                    continue;
+                }
+
+                for (val effect : effectsToApply) {
+                    pixel = effect.apply(pixel);
+                }
+
+                img.setRGB(x, y, pixel);
+            }
         }
     }
 
@@ -75,7 +101,7 @@ final class TileItemRender {
         if (dmiCache.containsKey(itemIcon)) {
             return dmiCache.get(itemIcon);
         } else {
-            Dmi dmi = DmiSlurper.slurpUp(new File(dmeRootPath + File.separatorChar + itemIcon));
+            Dmi dmi = DmiSlurper.slurpUp(new File(dmeRootPath + File.separator + itemIcon));
             dmiCache.put(itemIcon, dmi);
             return dmi;
         }
