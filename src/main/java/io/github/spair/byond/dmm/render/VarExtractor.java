@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmm.render;
 
 import com.udojava.evalex.Expression;
+import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dmi.SpriteDir;
 import io.github.spair.byond.dmm.TileItem;
@@ -54,6 +55,9 @@ final class VarExtractor {
 
     static String color(final TileItem item) {
         String colorValue = item.getCustomOrOriginalVar(ByondVars.COLOR).orElse(EMPTY_STRING);
+        if (ByondTypes.NULL.equals(colorValue) || colorValue.isEmpty()) {
+            return "";
+        }
         if (colorValue.startsWith(RGB_PREFIX)) {
             return parseRGBColor(colorValue);
         }

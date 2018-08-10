@@ -3,9 +3,9 @@ package io.github.spair.byond.dmm.render;
 import io.github.spair.byond.dmm.comparator.MapRegion;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.TileItem;
+import lombok.val;
 
 import javax.annotation.Nonnull;
-import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -84,9 +84,10 @@ public final class DmmRender {
             dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);
             dmmRender.placeAllItemsOnImage();
         } catch (Exception e) {
-            throw new RuntimeException("Unable to render dmm image."
-                    + " Dme root path: " + dmm.getDmeRootPath() + " Map region: " + mapRegion
-                    + " Types to ignore: " + typesToIgnore);
+            throw new RuntimeException(String.format(
+                    "Unable to render dmm image. Dme root path: %s Map region: %s Types to ignore: %s",
+                    dmm.getDmeRootPath(), mapRegion, typesToIgnore
+            ), e);
         }
 
         return dmmRender.finalImage;
@@ -101,8 +102,9 @@ public final class DmmRender {
         try {
             dmmRender.drawDiffPoints(region);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to render dmm image."
-                    + " Dme root path: " + dmm.getDmeRootPath() + " Map region: " + region);
+            throw new RuntimeException(String.format(
+                    "Unable to render dmm image. Dme root path: %s Map region: %s", dmm.getDmeRootPath(), region), e
+            );
         }
 
         return dmmRender.finalImage;
@@ -115,8 +117,8 @@ public final class DmmRender {
                         return;
                     }
 
-                    final double itemPlane = VarExtractor.plane(tileItem);
-                    final double itemLayer = VarExtractor.layer(tileItem);
+                    val itemPlane = VarExtractor.plane(tileItem);
+                    val itemLayer = VarExtractor.layer(tileItem);
 
                     planes.getPlane(itemPlane).getLayer(itemLayer).addItem(tileItem);
                 })
@@ -144,9 +146,9 @@ public final class DmmRender {
     }
 
     private void placeAllItemsOnImage() {
-        final int iconSize = dmm.getIconSize();
-        final TileItemRender itemRender = new TileItemRender(iconSize, dmm.getDmeRootPath());
-        final Graphics finalCanvas = finalImage.getGraphics();
+        val iconSize = dmm.getIconSize();
+        val itemRender = new TileItemRender(iconSize, dmm.getDmeRootPath());
+        val finalCanvas = finalImage.getGraphics();
 
         planes.forEach(plane ->
                 plane.forEach(layer ->
@@ -165,14 +167,14 @@ public final class DmmRender {
     }
 
     private void drawDiffPoints(final MapRegion mapRegion) {
-        final int iconSize = dmm.getIconSize();
-        final Graphics finalCanvas = finalImage.getGraphics();
+        val iconSize = dmm.getIconSize();
+        val finalCanvas = finalImage.getGraphics();
 
         finalCanvas.setColor(Color.RED);
 
         mapRegion.getDiffPoints().forEach(diffPoint -> {
-            int xPos = (diffPoint.getX() - lowerX) * iconSize;
-            int yPos = (upperY - diffPoint.getY()) * iconSize;
+            val xPos = (diffPoint.getX() - lowerX) * iconSize;
+            val yPos = (upperY - diffPoint.getY()) * iconSize;
 
             finalCanvas.drawRect(xPos, yPos, iconSize, iconSize);
             finalCanvas.fillRect(xPos, yPos, iconSize, iconSize);
