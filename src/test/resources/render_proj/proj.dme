@@ -9,3 +9,6 @@
 	
 /turf/floor
 	icon = 'floor.dmi'
+
+/turf/floor/yellow
+	color = "yellow"

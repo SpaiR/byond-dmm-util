@@ -2,7 +2,6 @@ package io.github.spair.byond.dmm;
 
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dme.DmeItem;
-import io.github.spair.byond.dmm.TileItem;
 
 import java.util.Map;
 

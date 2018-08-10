@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmm.comparator;
 
 import io.github.spair.byond.dmm.Dmm;
+import io.github.spair.byond.dmm.MapRegion;
 
 import java.util.ArrayList;
 import java.util.List;

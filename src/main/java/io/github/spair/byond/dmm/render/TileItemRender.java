@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,20 +62,7 @@ final class TileItemRender {
     }
 
     private void applyPixelEffects(final TileItem item, final BufferedImage img) {
-        val colorValue = VarExtractor.color(item);
-        val alphaValue = VarExtractor.alpha(item);
-
-        val hasColor = !colorValue.isEmpty();
-        val notDefaultAlpha = alphaValue != VarExtractor.DEFAULT_ALPHA;
-
-        val effectsToApply = new ArrayList<PixelEffect>();
-
-        if (hasColor) {
-            ColorParser.parse(colorValue).ifPresent(color -> effectsToApply.add(new ColorPixelEffect(color)));
-        }
-        if (notDefaultAlpha) {
-            effectsToApply.add(new AlphaPixelEffect(alphaValue));
-        }
+        val effectsToApply = getEffectsList(item);
 
         if (effectsToApply.isEmpty()) {
             return;
@@ -95,6 +83,22 @@ final class TileItemRender {
                 img.setRGB(x, y, pixel);
             }
         }
+    }
+
+    private List<PixelEffect> getEffectsList(final TileItem item) {
+        val effectsList = new ArrayList<PixelEffect>();
+
+        val colorValue = VarExtractor.color(item);
+        val alphaValue = VarExtractor.alpha(item);
+
+        if (!colorValue.isEmpty()) {
+            ColorParser.parse(colorValue).ifPresent(color -> effectsList.add(new ColorPixelEffect(color)));
+        }
+        if (alphaValue != VarExtractor.DEFAULT_ALPHA) {
+            effectsList.add(new AlphaPixelEffect(alphaValue));
+        }
+
+        return effectsList;
     }
 
     private Dmi getCachedDmi(final String itemIcon) {

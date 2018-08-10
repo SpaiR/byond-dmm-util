@@ -1,5 +1,5 @@
 "a" = (/area/simple,/turf/floor)
-"b" = (/area/simple,/turf/floor,/obj/item)
+"b" = (/area/simple,/turf/floor/yellow,/obj/item)
 "c" = (/area/simple,/turf/floor{color = "red"},/obj/item{alpha = 128})
 
 (1,1,1) = {"

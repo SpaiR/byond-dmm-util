@@ -1,7 +1,5 @@
 package io.github.spair.byond.dmm;
 
-import io.github.spair.byond.dmm.Dmm;
-import io.github.spair.byond.dmm.Tile;
 import org.junit.Before;
 import org.junit.Test;
 

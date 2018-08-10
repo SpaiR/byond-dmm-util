@@ -1,6 +1,6 @@
 package io.github.spair.byond.dmm.render;
 
-import io.github.spair.byond.dmm.comparator.MapRegion;
+import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.TileItem;
 import lombok.val;
@@ -56,6 +56,10 @@ public final class DmmRender {
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
+    ////////////////////////////////////////
+    // Render with ignored types
+    //
+
     public static BufferedImage renderToImage(final Dmm dmm) {
         return renderToImage(dmm, Collections.emptySet());
     }
@@ -78,10 +82,10 @@ public final class DmmRender {
 
     public static BufferedImage renderToImage(
             final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToIgnore) {
-        final DmmRender dmmRender = new DmmRender(dmm, mapRegion);
+        val dmmRender = new DmmRender(dmm, mapRegion);
 
         try {
-            dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore);
+            dmmRender.distributeToSortedPlanesAndLayers(typesToIgnore, DistributeType.IGNORE);
             dmmRender.placeAllItemsOnImage();
         } catch (Exception e) {
             throw new RuntimeException(String.format(
@@ -93,11 +97,101 @@ public final class DmmRender {
         return dmmRender.finalImage;
     }
 
+    ////////////////////////////////////////
+    // Render with included types
+    //
+
+    public static BufferedImage renderToImageWithTypes(
+            final Dmm dmm, final String typeToInclude, final String... typesToInclude) {
+        return renderToImageWithTypes(dmm, new HashSet<String>(Arrays.asList(typesToInclude)) {
+            {
+                add(typeToInclude);
+            }
+        });
+    }
+
+    public static BufferedImage renderToImageWithTypes(final Dmm dmm, final Set<String> typesToInclude) {
+        return renderToImageWithTypes(dmm, MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY()), typesToInclude);
+    }
+
+    public static BufferedImage renderToImageWithTypes(
+            final Dmm dmm, final MapRegion mapRegion, final String typeToInclude, final String... typesToInclude) {
+        return renderToImageWithTypes(dmm, mapRegion, new HashSet<String>(Arrays.asList(typesToInclude)) {
+            {
+                add(typeToInclude);
+            }
+        });
+    }
+
+    public static BufferedImage renderToImageWithTypes(
+            final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToInclude) {
+        val dmmRender = new DmmRender(dmm, mapRegion);
+
+        try {
+            dmmRender.distributeToSortedPlanesAndLayers(typesToInclude, DistributeType.INCLUDE);
+            dmmRender.placeAllItemsOnImage();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format(
+                    "Unable to render dmm image. Dme root path: %s Map region: %s Types to include: %s",
+                    dmm.getDmeRootPath(), mapRegion, typesToInclude
+            ), e);
+        }
+
+        return dmmRender.finalImage;
+    }
+
+    ////////////////////////////////////////
+    // Render with equal types only
+    //
+
+    public static BufferedImage renderToImageWithEqTypes(
+            final Dmm dmm, final String equalType, final String... equalTypes) {
+        return renderToImageWithEqTypes(dmm, new HashSet<String>(Arrays.asList(equalTypes)) {
+            {
+                add(equalType);
+            }
+        });
+    }
+
+    public static BufferedImage renderToImageWithEqTypes(final Dmm dmm, final Set<String> equalTypes) {
+        return renderToImageWithTypes(dmm, MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY()), equalTypes);
+    }
+
+    public static BufferedImage renderToImageWithEqTypes(
+            final Dmm dmm, final MapRegion mapRegion, final String equalType, final String... equalTypes) {
+        return renderToImageWithEqTypes(dmm, mapRegion, new HashSet<String>(Arrays.asList(equalTypes)) {
+            {
+                add(equalType);
+            }
+        });
+    }
+
+    public static BufferedImage renderToImageWithEqTypes(
+            final Dmm dmm, final MapRegion mapRegion, final Set<String> equalTypes) {
+        val dmmRender = new DmmRender(dmm, mapRegion);
+
+        try {
+            dmmRender.distributeToSortedPlanesAndLayers(equalTypes, DistributeType.EQUAL);
+            dmmRender.placeAllItemsOnImage();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format(
+                    "Unable to render dmm image. Dme root path: %s Map region: %s Equal types: %s",
+                    dmm.getDmeRootPath(), mapRegion, equalTypes
+            ), e);
+        }
+
+        return dmmRender.finalImage;
+    }
+
+    ////////////////////////////////////////
+    // Render with diff points only
+    //
+
     public static BufferedImage renderDiffPoints(final Dmm dmm, final MapRegion mapRegion) {
-        final MapRegion region = MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY());
+        val region = MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY());
         region.addDiffPoint(mapRegion.getDiffPoints());
 
-        final DmmRender dmmRender = new DmmRender(dmm, region);
+        val dmmRender = new DmmRender(dmm, region);
 
         try {
             dmmRender.drawDiffPoints(region);
@@ -110,10 +204,12 @@ public final class DmmRender {
         return dmmRender.finalImage;
     }
 
-    private void distributeToSortedPlanesAndLayers(final Set<String> typesToIgnore) {
+    ////////////////////////////////////////
+
+    private void distributeToSortedPlanesAndLayers(final Set<String> types, final DistributeType distributeType) {
         dmm.forEach(tile ->
                 tile.forEach(tileItem -> {
-                    if (isIgnoredType(tileItem, typesToIgnore) || notInBounds(tileItem)) {
+                    if (notAllowedByDistributeType(tileItem, types, distributeType) || notInBounds(tileItem)) {
                         return;
                     }
 
@@ -131,9 +227,32 @@ public final class DmmRender {
         );
     }
 
-    private boolean isIgnoredType(final TileItem item, final Set<String> typesToIgnore) {
-        for (String type : typesToIgnore) {
+    private boolean notAllowedByDistributeType(
+            final TileItem tileItem, final Set<String> types, final DistributeType distributeType) {
+        switch (distributeType) {
+            case IGNORE:
+                return isInTypes(tileItem, types);
+            case INCLUDE:
+                return !isInTypes(tileItem, types);
+            case EQUAL:
+                return !isInEqualTypes(tileItem, types);
+            default:
+                return false;
+        }
+    }
+
+    private boolean isInTypes(final TileItem item, final Set<String> types) {
+        for (String type : types) {
             if (item.isType(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isInEqualTypes(final TileItem item, final Set<String> types) {
+        for (String type : types) {
+            if (item.getType().equals(type)) {
                 return true;
             }
         }
@@ -233,5 +352,9 @@ public final class DmmRender {
         public Iterator<TileItem> iterator() {
             return items.iterator();
         }
+    }
+
+    private enum DistributeType {
+        IGNORE, INCLUDE, EQUAL
     }
 }

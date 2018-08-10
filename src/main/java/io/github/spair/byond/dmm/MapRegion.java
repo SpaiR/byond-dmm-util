@@ -1,15 +1,13 @@
-package io.github.spair.byond.dmm.comparator;
+package io.github.spair.byond.dmm;
 
-import lombok.AccessLevel;
+import io.github.spair.byond.dmm.comparator.DiffPoint;
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
 public final class MapRegion {
 
@@ -77,14 +75,14 @@ public final class MapRegion {
         return this;
     }
 
-    boolean isInBounds(final int x, final int y) {
+    public boolean isInBounds(final int x, final int y) {
         return (isInBoundsOfLowerX(x) && (isInBoundsOfLowerY(y) || isInBoundsOfUpperY(y)))
                 || (isInBoundsOfUpperX(x) && (isInBoundsOfLowerY(y) || isInBoundsOfUpperY(y)))
                 || (isInBoundsOfLowerY(y) && (isInBoundsOfLowerX(x) || isInBoundsOfUpperX(x)))
                 || (isInBoundsOfUpperY(y) && (isInBoundsOfLowerX(x) || isInBoundsOfUpperX(x)));
     }
 
-    void expandBounds(final int x, final int y) {
+    public void expandBounds(final int x, final int y) {
         boolean xBoundsChanged = true;
         boolean yBoundsChanged = true;
 
