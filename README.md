@@ -9,7 +9,7 @@
 Library to parse and render DMM files.
 
 ## Installation
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-dmm-util.svg?style=flat)](http://search.maven.org/#search|ga|1|g:"io.github.spair"a:"byond-dmm-util")
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-dmm-util.svg?style=flat)](https://search.maven.org/search?q=a:byond-dmm-util)
 [![JCenter](https://img.shields.io/bintray/v/spair/io.github.spair/byond-dmm-util.svg?label=jcenter)](https://bintray.com/spair/io.github.spair/byond-dmm-util/_latestVersion)
 
 Library deployed to Maven Central and JCenter repositories.
