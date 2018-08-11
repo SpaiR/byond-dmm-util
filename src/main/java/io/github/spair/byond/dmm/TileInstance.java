@@ -2,7 +2,6 @@ package io.github.spair.byond.dmm;
 
 import lombok.Data;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +21,6 @@ public class TileInstance implements Iterable<DmmItem> {
         dmmItems.add(dmmItem);
     }
 
-    @Nonnull
     @Override
     public Iterator<DmmItem> iterator() {
         return dmmItems.iterator();

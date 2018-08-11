@@ -1,7 +1,7 @@
 #include "map.dmm"
 
 /area/simple
-	layer = 10
+	layer = 1 + 9
 	icon = 'area.dmi'
 
 /obj/item

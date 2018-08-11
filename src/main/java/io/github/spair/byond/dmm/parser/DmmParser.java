@@ -1,5 +1,6 @@
 package io.github.spair.byond.dmm.parser;
 
+import io.github.spair.byond.ByondFiles;
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dmm.Dmm;
 import lombok.val;
@@ -13,11 +14,9 @@ import java.io.UncheckedIOException;
 @SuppressWarnings("WeakerAccess")
 public final class DmmParser {
 
-    private static final String DMM_SUFFIX = ".dmm";
-
     public static Dmm parse(final File dmmFile, final Dme dme) {
         try {
-            if (!dmmFile.isFile() || !dmmFile.getName().endsWith(DMM_SUFFIX)) {
+            if (!dmmFile.isFile() || !dmmFile.getName().endsWith(ByondFiles.DMM_SUFFIX)) {
                 throw new IllegalArgumentException("Parser only accept '.dmm' files");
             }
 

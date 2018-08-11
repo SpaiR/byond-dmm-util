@@ -2,7 +2,6 @@ package io.github.spair.byond.dmm;
 
 import lombok.Data;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,6 @@ public class Tile implements Iterable<TileItem> {
         return Objects.equals(tileInstance.getDmmItems(), tile.tileInstance.getDmmItems());
     }
 
-    @Nonnull
     @Override
     public Iterator<TileItem> iterator() {
         return tileItems.iterator();

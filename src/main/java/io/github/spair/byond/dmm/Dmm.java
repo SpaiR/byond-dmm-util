@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -50,7 +49,6 @@ public class Dmm implements Iterable<Tile> {
         return x > 0 && x <= maxX && y > 0 && y <= maxY;
     }
 
-    @Nonnull
     @Override
     public Iterator<Tile> iterator() {
         return new DmmIterator();

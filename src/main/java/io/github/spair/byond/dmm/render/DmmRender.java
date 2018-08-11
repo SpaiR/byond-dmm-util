@@ -5,7 +5,6 @@ import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.TileItem;
 import lombok.val;
 
-import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -314,7 +313,6 @@ public final class DmmRender {
             return plane;
         }
 
-        @Nonnull
         @Override
         public Iterator<Plane> iterator() {
             return planes.values().iterator();
@@ -333,7 +331,6 @@ public final class DmmRender {
             return layer;
         }
 
-        @Nonnull
         @Override
         public Iterator<Layer> iterator() {
             return layers.values().iterator();
@@ -347,7 +344,6 @@ public final class DmmRender {
             items.add(tileItem);
         }
 
-        @Nonnull
         @Override
         public Iterator<TileItem> iterator() {
             return items.iterator();

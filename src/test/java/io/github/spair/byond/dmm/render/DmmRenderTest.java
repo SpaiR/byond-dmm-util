@@ -2,7 +2,7 @@ package io.github.spair.byond.dmm.render;
 
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.dme.Dme;
-import io.github.spair.byond.dme.DmeParser;
+import io.github.spair.byond.dme.parser.DmeParser;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.ResourceUtil;
 import io.github.spair.byond.dmm.MapRegion;

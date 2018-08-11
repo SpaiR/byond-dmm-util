@@ -1,6 +1,5 @@
 package io.github.spair.byond.dmm.render;
 
-import com.udojava.evalex.Expression;
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dmi.SpriteDir;
@@ -22,11 +21,11 @@ final class VarExtractor {
     private static final String RGB_PREFIX = "rgb(";
 
     static double plane(final TileItem item) {
-        return evaluateMathExpressionIfExist(item.getCustomOrOriginalVar(ByondVars.PLANE).orElse(DEFAULT_LAYER_PLANE));
+        return Double.parseDouble(item.getCustomOrOriginalVar(ByondVars.PLANE).orElse(DEFAULT_LAYER_PLANE));
     }
 
     static double layer(final TileItem item) {
-        return evaluateMathExpressionIfExist(item.getCustomOrOriginalVar(ByondVars.LAYER).orElse(DEFAULT_LAYER_PLANE));
+        return Double.parseDouble(item.getCustomOrOriginalVar(ByondVars.LAYER).orElse(DEFAULT_LAYER_PLANE));
     }
 
     static String icon(final TileItem item) {
@@ -62,14 +61,6 @@ final class VarExtractor {
             return parseRGBColor(colorValue);
         }
         return colorValue.substring(1, colorValue.length() - 1);
-    }
-
-    private static double evaluateMathExpressionIfExist(final String value) {
-        if (value.contains("+") || value.contains("-") || value.contains("*") || value.contains("/")) {
-            return new Expression(value).eval().doubleValue();
-        } else {
-            return Double.parseDouble(value);
-        }
     }
 
     @SuppressWarnings("MagicNumber")

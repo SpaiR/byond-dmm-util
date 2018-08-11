@@ -1,15 +1,13 @@
 package io.github.spair.byond.dmm.render;
 
 import io.github.spair.byond.dmi.Dmi;
-import io.github.spair.byond.dmi.DmiSlurper;
+import io.github.spair.byond.dmi.slurper.DmiSlurper;
 import io.github.spair.byond.dmi.DmiSprite;
 import io.github.spair.byond.dmi.SpriteDir;
 import io.github.spair.byond.dmm.TileItem;
 import lombok.val;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
@@ -112,18 +110,15 @@ final class TileItemRender {
     }
 
     private DmiSprite getItemSprite(final Dmi itemDmi, final String itemIconState, final SpriteDir itemDir) {
-        return Optional
-                .ofNullable(
-                        itemDmi.getStateSprite(itemIconState, itemDir))
-                .orElseGet(
-                        () -> itemDmi.getStateSprite(itemIconState)
-                );
+        return itemDmi.getStateSprite(itemIconState, itemDir)
+                .orElseGet(() -> itemDmi.getStateSprite(itemIconState)
+                        .orElse(null));
     }
 
     private BufferedImage deepImageCopy(final BufferedImage img) {
-        final ColorModel cm = img.getColorModel();
-        final WritableRaster raster = img.copyData(null);
-        final boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+        val colorModel = img.getColorModel();
+        val raster = img.copyData(null);
+        val isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
+        return new BufferedImage(colorModel, raster, isAlphaPremultiplied, null);
     }
 }

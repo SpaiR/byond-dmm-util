@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 public class VarExtractorTest {
 
     @Test
-    public void testPlaneWithoutExpression() {
+    public void testPlane() {
         assertEquals(5.5, VarExtractor.plane(
                 TileItemFactory.create(createVariable("plane", "5.5"))
         ), 0);
@@ -23,26 +23,12 @@ public class VarExtractorTest {
     }
 
     @Test
-    public void testPlaneWithExpression() {
-        assertEquals(4.2, VarExtractor.plane(
-                TileItemFactory.create(createVariable("plane", "4 + 0.2"))
-        ), 0);
-    }
-
-    @Test
-    public void testLayerWithoutExpression() {
+    public void testLayer() {
         assertEquals(6.0, VarExtractor.layer(
                 TileItemFactory.create(createVariable("layer", "6"))
         ), 0);
         assertEquals(0.0, VarExtractor.layer(
                 TileItemFactory.create(createVariable("notLayer", ""))
-        ), 0);
-    }
-
-    @Test
-    public void testLayerWithExpression() {
-        assertEquals(7.3, VarExtractor.layer(
-                TileItemFactory.create(createVariable("layer", "4 + 3.3"))
         ), 0);
     }
 
