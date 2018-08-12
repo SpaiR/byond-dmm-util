@@ -57,7 +57,7 @@
         <dependency>
             <groupId>io.github.spair</groupId>
             <artifactId>byond-dme-parser</artifactId>
-            <version>0.1.9</version>
+            <version>0.1.9.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.spair</groupId>
