@@ -23,6 +23,8 @@ Library deployed to Maven Central and JCenter repositories.
 </dependency>
 ```
 
+Library depends on [byond-dme-parser](https://github.com/SpaiR/byond-dme-parser) and [byond-dmi-util](https://github.com/SpaiR/byond-dmi-util), so appropriate dependencies should be added too.
+
 #### build.gradle:
 ```
 compile 'io.github.spair:byond-dmm-util:${last.version}'
