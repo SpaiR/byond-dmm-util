@@ -3,14 +3,12 @@ package io.github.spair.byond.dmm;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Data
-@NoArgsConstructor
 @SuppressWarnings("WeakerAccess")
 public class Dmm implements Iterable<Tile> {
 

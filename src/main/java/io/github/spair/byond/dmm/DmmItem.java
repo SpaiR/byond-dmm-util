@@ -2,14 +2,12 @@ package io.github.spair.byond.dmm;
 
 import io.github.spair.byond.VarUtil;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Data
-@NoArgsConstructor
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class DmmItem {
 

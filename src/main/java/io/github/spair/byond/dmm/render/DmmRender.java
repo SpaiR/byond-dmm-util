@@ -102,11 +102,7 @@ public final class DmmRender {
 
     public static BufferedImage renderToImageWithTypes(
             final Dmm dmm, final String typeToInclude, final String... typesToInclude) {
-        return renderToImageWithTypes(dmm, new HashSet<String>(Arrays.asList(typesToInclude)) {
-            {
-                add(typeToInclude);
-            }
-        });
+        return renderToImageWithTypes(dmm, concatToSet(typeToInclude, typesToInclude));
     }
 
     public static BufferedImage renderToImageWithTypes(final Dmm dmm, final Set<String> typesToInclude) {
@@ -115,11 +111,7 @@ public final class DmmRender {
 
     public static BufferedImage renderToImageWithTypes(
             final Dmm dmm, final MapRegion mapRegion, final String typeToInclude, final String... typesToInclude) {
-        return renderToImageWithTypes(dmm, mapRegion, new HashSet<String>(Arrays.asList(typesToInclude)) {
-            {
-                add(typeToInclude);
-            }
-        });
+        return renderToImageWithTypes(dmm, mapRegion, concatToSet(typeToInclude, typesToInclude));
     }
 
     public static BufferedImage renderToImageWithTypes(
@@ -145,11 +137,7 @@ public final class DmmRender {
 
     public static BufferedImage renderToImageWithEqTypes(
             final Dmm dmm, final String equalType, final String... equalTypes) {
-        return renderToImageWithEqTypes(dmm, new HashSet<String>(Arrays.asList(equalTypes)) {
-            {
-                add(equalType);
-            }
-        });
+        return renderToImageWithEqTypes(dmm, concatToSet(equalType, equalTypes));
     }
 
     public static BufferedImage renderToImageWithEqTypes(final Dmm dmm, final Set<String> equalTypes) {
@@ -158,11 +146,7 @@ public final class DmmRender {
 
     public static BufferedImage renderToImageWithEqTypes(
             final Dmm dmm, final MapRegion mapRegion, final String equalType, final String... equalTypes) {
-        return renderToImageWithEqTypes(dmm, mapRegion, new HashSet<String>(Arrays.asList(equalTypes)) {
-            {
-                add(equalType);
-            }
-        });
+        return renderToImageWithEqTypes(dmm, mapRegion, concatToSet(equalType, equalTypes));
     }
 
     public static BufferedImage renderToImageWithEqTypes(
@@ -348,6 +332,12 @@ public final class DmmRender {
         public Iterator<TileItem> iterator() {
             return items.iterator();
         }
+    }
+
+    private static Set<String> concatToSet(final String arg, final String... args) {
+        return new HashSet<String>(Arrays.asList(args)) {
+            { add(arg); }
+        };
     }
 
     private enum DistributeType {
