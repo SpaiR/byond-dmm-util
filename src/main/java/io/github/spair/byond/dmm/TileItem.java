@@ -19,14 +19,12 @@ public class TileItem {
     @Getter(AccessLevel.NONE)
     private DmeItem dmeItem;
 
-    private int x, y, z;
+    private int x, y;
     private Map<String, String> customVars;
 
-    public TileItem(
-            final int x, final int y, final int z, final DmeItem dmeItem, final Map<String, String> customVars) {
+    public TileItem(final int x, final int y, final DmeItem dmeItem, final Map<String, String> customVars) {
         this.x = x;
         this.y = y;
-        this.z = z;
         this.dmeItem = dmeItem;
         this.customVars = customVars;
     }

@@ -3,6 +3,7 @@ package io.github.spair.byond.dmm.render;
 import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.TileItem;
+import io.github.spair.byond.dmm.comparator.DiffPoint;
 import lombok.val;
 
 import java.awt.Color;
@@ -203,8 +204,8 @@ public final class DmmRender {
                 })
         );
 
-        planes.forEach(plane ->
-                plane.forEach(layer ->
+        planes.forEach(planes ->
+                planes.forEach(layer ->
                         layer.items.sort(RenderPriority.COMPARATOR)
                 )
         );
@@ -254,14 +255,14 @@ public final class DmmRender {
 
         planes.forEach(plane ->
                 plane.forEach(layer ->
-                        layer.forEach(tileItem ->
-                                itemRender.renderItem(tileItem).ifPresent(itemImage -> {
-                                    int xPos = ((tileItem.getX() - lowerX) * iconSize) + itemImage.getXShift();
-                                    int yPos = ((upperY - tileItem.getY()) * iconSize) - itemImage.getYShift();
+                        layer.forEach(tileItem -> {
+                            itemRender.renderItem(tileItem).ifPresent(itemImage -> {
+                                int xPos = ((tileItem.getX() - lowerX) * iconSize) + itemImage.getXShift();
+                                int yPos = ((upperY - tileItem.getY()) * iconSize) - itemImage.getYShift();
 
-                                    finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
-                                })
-                        )
+                                finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
+                            });
+                        })
                 )
         );
 
@@ -274,13 +275,13 @@ public final class DmmRender {
 
         finalCanvas.setColor(Color.RED);
 
-        mapRegion.getDiffPoints().forEach(diffPoint -> {
+        for (DiffPoint diffPoint : mapRegion.getDiffPoints()) {
             val xPos = (diffPoint.getX() - lowerX) * iconSize;
             val yPos = (upperY - diffPoint.getY()) * iconSize;
 
             finalCanvas.drawRect(xPos, yPos, iconSize, iconSize);
             finalCanvas.fillRect(xPos, yPos, iconSize, iconSize);
-        });
+        }
 
         finalCanvas.dispose();
     }
@@ -336,7 +337,9 @@ public final class DmmRender {
 
     private static Set<String> concatToSet(final String arg, final String... args) {
         return new HashSet<String>(Arrays.asList(args)) {
-            { add(arg); }
+            {
+                add(arg);
+            }
         };
     }
 

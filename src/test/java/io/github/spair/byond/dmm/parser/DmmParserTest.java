@@ -4,9 +4,9 @@ import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dme.DmeItem;
 import io.github.spair.byond.dmm.Dmm;
-import io.github.spair.byond.dmm.DmmItem;
 import io.github.spair.byond.dmm.ResourceUtil;
-import io.github.spair.byond.dmm.TileInstance;
+import io.github.spair.dmm.io.TileContent;
+import io.github.spair.dmm.io.TileObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,14 +40,14 @@ public class DmmParserTest {
     private void commonChecks(final Dmm dmm) {
         assertEquals("/test/root/path", dmm.getDmeRootPath());
 
-        assertNotNull(dmm.getTileInstance("a"));
-        assertNotNull(dmm.getTileInstance("b"));
-        assertNotNull(dmm.getTileInstance("c"));
+        assertNotNull(dmm.getTileContentByKey("a"));
+        assertNotNull(dmm.getTileContentByKey("b"));
+        assertNotNull(dmm.getTileContentByKey("c"));
 
-        TileInstance ti = dmm.getTileInstance("b");
+        TileContent ti = dmm.getTileContentByKey("b");
 
-        DmmItem turf = ti.getDmmItems().get(0);
-        DmmItem item = ti.getDmmItems().get(1);
+        TileObject turf = ti.getTileObjects().get(0);
+        TileObject item = ti.getTileObjects().get(1);
 
         assertEquals("/turf/simple", turf.getType());
         assertEquals("/obj/item", item.getType());
@@ -61,10 +61,10 @@ public class DmmParserTest {
 
         assertTrue(itemVars.isEmpty());
 
-        ti = dmm.getTileInstance("c");
+        ti = dmm.getTileContentByKey("c");
 
-        turf = ti.getDmmItems().get(0);
-        item = ti.getDmmItems().get(1);
+        turf = ti.getTileObjects().get(0);
+        item = ti.getTileObjects().get(1);
 
         assertEquals("/turf/simple", turf.getType());
         assertEquals("/obj/item", item.getType());

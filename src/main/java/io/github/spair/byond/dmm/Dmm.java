@@ -1,5 +1,6 @@
 package io.github.spair.byond.dmm;
 
+import io.github.spair.dmm.io.TileContent;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -13,9 +14,8 @@ import java.util.NoSuchElementException;
 public class Dmm implements Iterable<Tile> {
 
     public static final int DEFAULT_ICON_SIZE = 32;
-    public static final Dmm EMPTY_MAP = new Dmm();
 
-    private Map<String, TileInstance> tileInstances;
+    private Map<String, TileContent> tileContents;
 
     @Getter(AccessLevel.NONE)
     private Tile[][] tiles;
@@ -39,8 +39,8 @@ public class Dmm implements Iterable<Tile> {
         throw new IllegalArgumentException("Nonexistent coordinates. X: " + x + ", Y: " + y);
     }
 
-    public TileInstance getTileInstance(final String key) {
-        return tileInstances.get(key);
+    public TileContent getTileContentByKey(final String key) {
+        return tileContents.get(key);
     }
 
     public boolean hasTile(final int x, final int y) {

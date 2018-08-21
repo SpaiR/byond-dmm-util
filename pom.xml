@@ -56,6 +56,11 @@
         </dependency>
         <dependency>
             <groupId>io.github.spair</groupId>
+            <artifactId>dmm-io</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.spair</groupId>
             <artifactId>byond-dme-parser</artifactId>
             <version>0.1.9.1</version>
             <scope>provided</scope>

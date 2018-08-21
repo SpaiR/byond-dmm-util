@@ -15,7 +15,7 @@ public class DmmTest {
 
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 15; x++) {
-                tiles[y][x] = new Tile(x + 1, y + 1, 1, null);
+                tiles[y][x] = new Tile(x + 1, y + 1, null);
             }
         }
 

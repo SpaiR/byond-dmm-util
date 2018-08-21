@@ -1,47 +1,66 @@
 package io.github.spair.byond.dmm.parser;
 
-import io.github.spair.byond.ByondFiles;
+import io.github.spair.byond.ByondTypes;
+import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dmm.Dmm;
+import io.github.spair.byond.dmm.Tile;
+import io.github.spair.byond.dmm.TileItem;
+import io.github.spair.dmm.io.DmmData;
+import io.github.spair.dmm.io.TileLocation;
+import io.github.spair.dmm.io.TileObject;
+import io.github.spair.dmm.io.reader.DmmReader;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 
 import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings("WeakerAccess")
 public final class DmmParser {
 
+    private Dmm dmm = new Dmm();
+
     public static Dmm parse(final File dmmFile, final Dme dme) {
-        try {
-            if (!dmmFile.isFile() || !dmmFile.getName().endsWith(ByondFiles.DMM_SUFFIX)) {
-                throw new IllegalArgumentException("Parser only accept '.dmm' files");
-            }
+        DmmParser parser = new DmmParser();
+        parser.prepareDmm(dme);
 
-            val dmmText = readFile(dmmFile);
+        DmmData dmmData = DmmReader.readMap(dmmFile);
+        parser.processDmmData(dmmData, dme);
 
-            if (dmmText.isEmpty()) {
-                throw new IllegalArgumentException("File could not be empty");
-            }
-
-            return ParserFactory.createFromText(dmmText).parse(dmmText, dme);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to parse dmm file. File path: " + dmmFile.getPath(), e);
-        }
+        return parser.dmm;
     }
 
-    private static String readFile(final File dmmFile) {
-        try (val reader = new BufferedReader(new FileReader(dmmFile))) {
-            StringBuilder builder = new StringBuilder();
-            reader.lines().forEach(line -> builder.append(line.trim()).append('\n'));
-            return builder.toString();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    private void prepareDmm(final Dme dme) {
+        dmm.setDmeRootPath(dme.getAbsoluteRootPath());
+        dmm.setIconSize(dme.getItem(ByondTypes.WORLD).getVarAsInt(ByondVars.ICON_SIZE).orElse(Dmm.DEFAULT_ICON_SIZE));
     }
 
-    private DmmParser() {
+    private void processDmmData(final DmmData dmmData, final Dme dme) {
+        val maxX = dmmData.getMaxX();
+        val maxY = dmmData.getMaxY();
+
+        dmm.setMaxX(maxX);
+        dmm.setMaxY(maxY);
+        dmm.setTileContents(dmmData.getTileContentsByKey());
+
+        val tiles = new Tile[maxY][maxX];
+
+        for (int x = 1; x <= maxX; x++) {
+            for (int y = maxY; y >= 1; y--) {
+                val tileContent = dmmData.getTileContentByLocation(TileLocation.of(x, y));
+                val tile = new Tile(x, y, tileContent);
+
+                for (TileObject tileObject : tileContent) {
+                    val tileItem = new TileItem(x, y, dme.getItem(tileObject.getType()), tileObject.getVars());
+                    tile.addTileItem(tileItem);
+                }
+
+                tiles[y - 1][x - 1] = tile;
+            }
+        }
+
+        dmm.setTiles(tiles);
     }
 }
