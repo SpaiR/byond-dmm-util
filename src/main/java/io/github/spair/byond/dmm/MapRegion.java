@@ -119,11 +119,11 @@ public final class MapRegion {
     }
 
     private boolean isInBoundsOfUpperX(final int x) {
-        return x - upperX <= EXPAND_DISTANCE;
+        return Math.abs(x - upperX) <= EXPAND_DISTANCE;
     }
 
     private boolean isInBoundsOfUpperY(final int y) {
-        return y - upperY <= EXPAND_DISTANCE;
+        return Math.abs(y - upperY) <= EXPAND_DISTANCE;
     }
 
     private void calculateWidth() {

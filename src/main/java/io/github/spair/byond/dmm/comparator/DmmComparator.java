@@ -61,34 +61,34 @@ public final class DmmComparator {
             return Optional.empty();
         }
 
-        List<MapRegion> chunks = new ArrayList<>();
+        List<MapRegion> localChunks = new ArrayList<>();
 
         for (DiffPoint diffPoint : diffPoints) {
             final int x = diffPoint.getX();
             final int y = diffPoint.getY();
 
-            if (chunks.isEmpty()) {
-                chunks.add(MapRegion.singlePoint(x, y).addDiffPoint(diffPoint));
+            if (localChunks.isEmpty()) {
+                localChunks.add(MapRegion.singlePoint(x, y).addDiffPoint(diffPoint));
                 continue;
             }
 
             boolean isExpanded = false;
 
-            for (MapRegion chunk : chunks) {
-                if (chunk.isInBounds(x, y)) {
-                    chunk.expandBounds(x, y);
-                    chunk.addDiffPoint(diffPoint);
+            for (MapRegion mapRegion : localChunks) {
+                if (mapRegion.isInBounds(x, y)) {
+                    mapRegion.expandBounds(x, y);
+                    mapRegion.addDiffPoint(diffPoint);
                     isExpanded = true;
                     break;
                 }
             }
 
             if (!isExpanded) {
-                chunks.add(MapRegion.singlePoint(x, y).addDiffPoint(diffPoint));
+                localChunks.add(MapRegion.singlePoint(x, y).addDiffPoint(diffPoint));
             }
         }
 
-        return Optional.of(chunks);
+        return Optional.of(localChunks);
     }
 
     private static List<DiffPoint> findDiffPoints(final Dmm dmmToCompare, final Dmm dmmCompareWith) {
