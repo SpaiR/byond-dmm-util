@@ -8,7 +8,7 @@ import lombok.val;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -60,28 +60,20 @@ public final class DmmRender {
     // Render with ignored types
     //
 
-    public static BufferedImage renderToImage(final Dmm dmm) {
-        return renderToImage(dmm, Collections.emptySet());
-    }
-
     public static BufferedImage renderToImage(final Dmm dmm, final String... typesToIgnore) {
-        return renderToImage(dmm, new HashSet<>(Arrays.asList(typesToIgnore)));
+        return renderToImage(dmm, Arrays.asList(typesToIgnore));
     }
 
-    public static BufferedImage renderToImage(final Dmm dmm, final Set<String> typesToIgnore) {
+    public static BufferedImage renderToImage(final Dmm dmm, final Collection<String> typesToIgnore) {
         return renderToImage(dmm, MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY()), typesToIgnore);
     }
 
-    public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion) {
-        return renderToImage(dmm, mapRegion, Collections.emptySet());
-    }
-
     public static BufferedImage renderToImage(final Dmm dmm, final MapRegion mapRegion, final String... typesToIgnore) {
-        return renderToImage(dmm, mapRegion, new HashSet<>(Arrays.asList(typesToIgnore)));
+        return renderToImage(dmm, mapRegion, Arrays.asList(typesToIgnore));
     }
 
     public static BufferedImage renderToImage(
-            final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToIgnore) {
+            final Dmm dmm, final MapRegion mapRegion, final Collection<String> typesToIgnore) {
         val dmmRender = new DmmRender(dmm, mapRegion);
 
         try {
@@ -101,22 +93,21 @@ public final class DmmRender {
     // Render with included types
     //
 
-    public static BufferedImage renderToImageWithTypes(
-            final Dmm dmm, final String typeToInclude, final String... typesToInclude) {
-        return renderToImageWithTypes(dmm, concatToSet(typeToInclude, typesToInclude));
+    public static BufferedImage renderToImageWithTypes(final Dmm dmm, final String... typesToInclude) {
+        return renderToImageWithTypes(dmm, Arrays.asList(typesToInclude));
     }
 
-    public static BufferedImage renderToImageWithTypes(final Dmm dmm, final Set<String> typesToInclude) {
+    public static BufferedImage renderToImageWithTypes(final Dmm dmm, final Collection<String> typesToInclude) {
         return renderToImageWithTypes(dmm, MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY()), typesToInclude);
     }
 
     public static BufferedImage renderToImageWithTypes(
-            final Dmm dmm, final MapRegion mapRegion, final String typeToInclude, final String... typesToInclude) {
-        return renderToImageWithTypes(dmm, mapRegion, concatToSet(typeToInclude, typesToInclude));
+            final Dmm dmm, final MapRegion mapRegion, final String... typesToInclude) {
+        return renderToImageWithTypes(dmm, mapRegion, Arrays.asList(typesToInclude));
     }
 
     public static BufferedImage renderToImageWithTypes(
-            final Dmm dmm, final MapRegion mapRegion, final Set<String> typesToInclude) {
+            final Dmm dmm, final MapRegion mapRegion, final Collection<String> typesToInclude) {
         val dmmRender = new DmmRender(dmm, mapRegion);
 
         try {
@@ -136,22 +127,21 @@ public final class DmmRender {
     // Render with equal types only
     //
 
-    public static BufferedImage renderToImageWithEqTypes(
-            final Dmm dmm, final String equalType, final String... equalTypes) {
-        return renderToImageWithEqTypes(dmm, concatToSet(equalType, equalTypes));
+    public static BufferedImage renderToImageWithEqTypes(final Dmm dmm, final String... equalTypes) {
+        return renderToImageWithEqTypes(dmm, Arrays.asList(equalTypes));
     }
 
-    public static BufferedImage renderToImageWithEqTypes(final Dmm dmm, final Set<String> equalTypes) {
-        return renderToImageWithTypes(dmm, MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY()), equalTypes);
-    }
-
-    public static BufferedImage renderToImageWithEqTypes(
-            final Dmm dmm, final MapRegion mapRegion, final String equalType, final String... equalTypes) {
-        return renderToImageWithEqTypes(dmm, mapRegion, concatToSet(equalType, equalTypes));
+    public static BufferedImage renderToImageWithEqTypes(final Dmm dmm, final Collection<String> equalTypes) {
+        return renderToImageWithEqTypes(dmm, MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY()), equalTypes);
     }
 
     public static BufferedImage renderToImageWithEqTypes(
-            final Dmm dmm, final MapRegion mapRegion, final Set<String> equalTypes) {
+            final Dmm dmm, final MapRegion mapRegion, final String... equalTypes) {
+        return renderToImageWithEqTypes(dmm, mapRegion, Arrays.asList(equalTypes));
+    }
+
+    public static BufferedImage renderToImageWithEqTypes(
+            final Dmm dmm, final MapRegion mapRegion, final Collection<String> equalTypes) {
         val dmmRender = new DmmRender(dmm, mapRegion);
 
         try {
@@ -190,36 +180,38 @@ public final class DmmRender {
 
     ////////////////////////////////////////
 
-    private void distributeToSortedPlanesAndLayers(final Set<String> types, final DistributeType distributeType) {
-        dmm.forEach(tile ->
-                tile.forEach(tileItem -> {
-                    if (notAllowedByDistributeType(tileItem, types, distributeType) || notInBounds(tileItem)) {
-                        return;
-                    }
+    private void distributeToSortedPlanesAndLayers(
+            final Collection<String> types, final DistributeType distributeType) {
+        for (val tile : dmm) {
+            for (val tileItem : tile) {
+                if (notAllowedByDistributeType(tileItem, types, distributeType) || notInBounds(tileItem)) {
+                    continue;
+                }
 
-                    val itemPlane = VarExtractor.plane(tileItem);
-                    val itemLayer = VarExtractor.layer(tileItem);
+                val itemPlane = VarExtractor.plane(tileItem);
+                val itemLayer = VarExtractor.layer(tileItem);
 
-                    planes.getPlane(itemPlane).getLayer(itemLayer).addItem(tileItem);
-                })
-        );
+                planes.getPlane(itemPlane).getLayer(itemLayer).addItem(tileItem);
+            }
+        }
 
-        planes.forEach(planes ->
-                planes.forEach(layer ->
-                        layer.items.sort(RenderPriority.COMPARATOR)
-                )
-        );
+        for (val plane : planes) {
+            for (val layer : plane) {
+                layer.items.sort(RenderPriority.COMPARATOR);
+            }
+        }
     }
 
     private boolean notAllowedByDistributeType(
-            final TileItem tileItem, final Set<String> types, final DistributeType distributeType) {
+            final TileItem tileItem, final Collection<String> types, final DistributeType distributeType) {
+        val typesSet = new HashSet<String>(types);
         switch (distributeType) {
             case IGNORE:
-                return isInTypes(tileItem, types);
+                return isInTypes(tileItem, typesSet);
             case INCLUDE:
-                return !isInTypes(tileItem, types);
+                return !isInTypes(tileItem, typesSet);
             case EQUAL:
-                return !isInEqualTypes(tileItem, types);
+                return !isInEqualTypes(tileItem, typesSet);
             default:
                 return false;
         }
@@ -253,18 +245,18 @@ public final class DmmRender {
         val itemRender = new TileItemRender(iconSize, dmm.getDmeRootPath());
         val finalCanvas = finalImage.getGraphics();
 
-        planes.forEach(plane ->
-                plane.forEach(layer ->
-                        layer.forEach(tileItem -> {
-                            itemRender.renderItem(tileItem).ifPresent(itemImage -> {
-                                int xPos = ((tileItem.getX() - lowerX) * iconSize) + itemImage.getXShift();
-                                int yPos = ((upperY - tileItem.getY()) * iconSize) - itemImage.getYShift();
+        for (val plane : planes) {
+            for (val layer : plane) {
+                for (val tileItem : layer) {
+                    itemRender.renderItem(tileItem).ifPresent(itemImage -> {
+                        int xPos = ((tileItem.getX() - lowerX) * iconSize) + itemImage.getXShift();
+                        int yPos = ((upperY - tileItem.getY()) * iconSize) - itemImage.getYShift();
 
-                                finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
-                            });
-                        })
-                )
-        );
+                        finalCanvas.drawImage(itemImage.getImage(), xPos, yPos, null);
+                    });
+                }
+            }
+        }
 
         finalCanvas.dispose();
     }
@@ -333,14 +325,6 @@ public final class DmmRender {
         public Iterator<TileItem> iterator() {
             return items.iterator();
         }
-    }
-
-    private static Set<String> concatToSet(final String arg, final String... args) {
-        return new HashSet<String>(Arrays.asList(args)) {
-            {
-                add(arg);
-            }
-        };
     }
 
     private enum DistributeType {
