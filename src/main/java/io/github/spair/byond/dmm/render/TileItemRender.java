@@ -27,32 +27,31 @@ final class TileItemRender {
     }
 
     Optional<TileItemImage> renderItem(final TileItem item) {
-        final String itemIcon = VarExtractor.icon(item);
-        final String itemIconState = VarExtractor.iconState(item);
+        val itemIcon = VarExtractor.icon(item);
+        val itemIconState = VarExtractor.iconState(item);
 
         if (itemIcon.isEmpty()) {
             return Optional.empty();
         }
 
-        final Dmi itemDmi = getCachedDmi(itemIcon);
-        final DmiSprite itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
+        val itemDmi = getCachedDmi(itemIcon);
+        val itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
 
         if (itemSprite == null) {  // TODO: add placeholder for items without sprites
             return Optional.empty();
         }
 
-        TileItemImage itemImage = new TileItemImage();
+        val itemImage = new TileItemImage();
 
         itemImage.setXShift(VarExtractor.pixelX(item));
         itemImage.setYShift(VarExtractor.pixelY(item));
+        itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
 
         // BYOND renders objects from bottom to top, while DmmRender do it from top to bottom.
         // This additional shift helps to properly render objects, which have sprite height more then world icon_size.
         if (iconSize < itemDmi.getMetadata().getSpritesHeight()) {
             itemImage.setYShift(itemImage.getYShift() + itemDmi.getMetadata().getSpritesHeight() - iconSize);
         }
-
-        itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
 
         applyPixelEffects(item, itemImage.getImage());
 

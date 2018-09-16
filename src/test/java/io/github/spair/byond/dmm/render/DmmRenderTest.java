@@ -60,22 +60,22 @@ public class DmmRenderTest {
 
     @Test
     public void testRenderToImageWithFullRender() {
-        assertRgb(FULL_RENDER_IMG, DmmRender.renderToImage(DMM));
+        assertRgb(FULL_RENDER_IMG, DmmRender.render(DMM));
     }
 
     @Test
     public void testRenderToImageWithPartialRender() {
-        assertRgb(PARTIAL_RENDER_IMG, DmmRender.renderToImage(DMM, ByondTypes.AREA));
+        assertRgb(PARTIAL_RENDER_IMG, DmmRender.render(DMM, FilterMode.IGNORE, ByondTypes.AREA));
     }
 
     @Test
     public void testRenderToImageWithFullRenderAndMapRegion() {
-        assertRgb(FULL_RENDER_REGION_IMG, DmmRender.renderToImage(DMM, MapRegion.of(2, 5)));
+        assertRgb(FULL_RENDER_REGION_IMG, DmmRender.render(DMM, MapRegion.of(2, 5)));
     }
 
     @Test
     public void testRenderToImageWithPartialRenderAndMapRegion() {
-        assertRgb(PARTIAL_RENDER_REGION_IMG, DmmRender.renderToImage(DMM, MapRegion.of(2, 5), ByondTypes.AREA));
+        assertRgb(PARTIAL_RENDER_REGION_IMG, DmmRender.render(DMM, MapRegion.of(2, 5), FilterMode.IGNORE, ByondTypes.AREA));
     }
 
     @Test
@@ -86,22 +86,22 @@ public class DmmRenderTest {
 
     @Test
     public void testRenderToImageWithTypesWithFullRender() {
-        assertRgb(FULL_RENDER_WITH_TYPES_IMG, DmmRender.renderToImageWithTypes(DMM, ByondTypes.TURF));
+        assertRgb(FULL_RENDER_WITH_TYPES_IMG, DmmRender.render(DMM, FilterMode.INCLUDE, ByondTypes.TURF));
     }
 
     @Test
     public void testRenderToImageWithTypesAndMapRegion() {
-        assertRgb(FULL_RENDER_REGION_WITH_TYPES_IMG, DmmRender.renderToImageWithTypes(DMM, MapRegion.of(2, 5), ByondTypes.TURF));
+        assertRgb(FULL_RENDER_REGION_WITH_TYPES_IMG, DmmRender.render(DMM, MapRegion.of(2, 5), FilterMode.INCLUDE, ByondTypes.TURF));
     }
 
     @Test
     public void testRenderToImageWithEqTypesWithFullRender() {
-        assertRgb(FULL_RENDER_WITH_EQ_TYPES_IMG, DmmRender.renderToImageWithEqTypes(DMM, "/obj/item"));
+        assertRgb(FULL_RENDER_WITH_EQ_TYPES_IMG, DmmRender.render(DMM, FilterMode.EQUAL, "/obj/item"));
     }
 
     @Test
     public void testRenderToImageWithEqTypesAndMapRegion() {
-        assertRgb(FULL_RENDER_REGION_WITH_EQ_TYPES_IMG, DmmRender.renderToImageWithEqTypes(DMM, MapRegion.of(2, 5), "/obj/item"));
+        assertRgb(FULL_RENDER_REGION_WITH_EQ_TYPES_IMG, DmmRender.render(DMM, MapRegion.of(2, 5), FilterMode.EQUAL, "/obj/item"));
     }
 
     private void assertRgb(final BufferedImage expected, final BufferedImage actual) {

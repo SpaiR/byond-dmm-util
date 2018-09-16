@@ -3,7 +3,7 @@ package io.github.spair.byond.dmm.render;
 import java.awt.Color;
 
 @SuppressWarnings("checkstyle:MagicNumber")
-final class ColorPixelEffect extends AbstractPixelEffect {
+final class ColorPixelEffect extends PixelEffect {
 
     private final int newAlpha;
     private final int newRed;
@@ -18,7 +18,7 @@ final class ColorPixelEffect extends AbstractPixelEffect {
     }
 
     @Override
-    public int apply(final int pixel) {
+    public Integer apply(final Integer pixel) {
         int a = (pixel >> 24) & 0xff;
         int r = (pixel >> 16) & 0xff;
         int g = (pixel >> 8) & 0xff;

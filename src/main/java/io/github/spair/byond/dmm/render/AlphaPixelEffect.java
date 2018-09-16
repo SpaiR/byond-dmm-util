@@ -1,7 +1,7 @@
 package io.github.spair.byond.dmm.render;
 
 @SuppressWarnings("checkstyle:MagicNumber")
-final class AlphaPixelEffect extends AbstractPixelEffect {
+final class AlphaPixelEffect extends PixelEffect {
 
     private final int newAlpha;
 
@@ -10,7 +10,7 @@ final class AlphaPixelEffect extends AbstractPixelEffect {
     }
 
     @Override
-    public int apply(final int pixel) {
+    public Integer apply(final Integer pixel) {
         return resolvePixel(newAlpha, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff, pixel & 0xff);
     }
 }
