@@ -46,11 +46,11 @@ public class DmmParserTest {
 
         TileContent ti = dmm.getTileContentByKey("b");
 
-        TileObject turf = ti.getTileObjects().get(0);
-        TileObject item = ti.getTileObjects().get(1);
+        TileObject item = ti.getTileObjects().get(0);
+        TileObject turf = ti.getTileObjects().get(1);
 
-        assertEquals("/turf/simple", turf.getType());
         assertEquals("/obj/item", item.getType());
+        assertEquals("/turf/simple", turf.getType());
 
         Map<String, String> turfVars = turf.getVars();
         Map<String, String> itemVars = item.getVars();
@@ -63,11 +63,11 @@ public class DmmParserTest {
 
         ti = dmm.getTileContentByKey("c");
 
-        turf = ti.getTileObjects().get(0);
-        item = ti.getTileObjects().get(1);
+        item = ti.getTileObjects().get(0);
+        turf = ti.getTileObjects().get(1);
 
-        assertEquals("/turf/simple", turf.getType());
         assertEquals("/obj/item", item.getType());
+        assertEquals("/turf/simple", turf.getType());
 
         turfVars = turf.getVars();
         itemVars = item.getVars();
