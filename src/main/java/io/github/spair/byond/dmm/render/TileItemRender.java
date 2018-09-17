@@ -21,6 +21,8 @@ final class TileItemRender {
     private final String dmeRootPath;
     private Map<String, Dmi> dmiCache = new HashMap<>();
 
+    private final DmiSlurper dmiSlurper = new DmiSlurper();
+
     TileItemRender(final int iconSize, final String dmeRootPath) {
         this.iconSize = iconSize;
         this.dmeRootPath = dmeRootPath;
@@ -102,7 +104,7 @@ final class TileItemRender {
         if (dmiCache.containsKey(itemIcon)) {
             return dmiCache.get(itemIcon);
         } else {
-            Dmi dmi = DmiSlurper.slurpUp(new File(dmeRootPath + File.separator + itemIcon));
+            Dmi dmi = dmiSlurper.slurpUp(new File(dmeRootPath + File.separator + itemIcon));
             dmiCache.put(itemIcon, dmi);
             return dmi;
         }

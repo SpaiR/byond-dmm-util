@@ -63,13 +63,11 @@
             <groupId>io.github.spair</groupId>
             <artifactId>byond-dme-parser</artifactId>
             <version>0.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.spair</groupId>
             <artifactId>byond-dmi-util</artifactId>
-            <version>1.0.7</version>
-            <scope>provided</scope>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

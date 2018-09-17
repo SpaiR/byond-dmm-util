@@ -23,8 +23,6 @@ Library deployed to Maven Central and JCenter repositories.
 </dependency>
 ```
 
-Library depends on [byond-dme-parser](https://github.com/SpaiR/byond-dme-parser) and [byond-dmi-util](https://github.com/SpaiR/byond-dmi-util), so appropriate dependencies should be added too.
-
 #### build.gradle:
 ```
 compile 'io.github.spair:byond-dmm-util:${last.version}'
@@ -41,7 +39,7 @@ taken from [byond-dme-parser](https://github.com/SpaiR/byond-dme-parser) library
 
 Renders `Dmm` object into `BufferedImage`. Has ability to render specific region of map or apply object filter to exclude it from render result. For example: 
 ```
-DmmRender.renderToImage(dmm, MapRegion.of(1, 5), "/area", "/turf")
+DmmRender.render(dmm, MapRegion.of(1, 5), FilterMode.IGNORE, "/area", "/turf")
 ```
 
 ### DmmComparator
