@@ -3,33 +3,28 @@ package io.github.spair.byond.dmm;
 import io.github.spair.dmm.io.TileContent;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 @Data
-@SuppressWarnings("WeakerAccess")
 public class Tile implements Iterable<TileItem> {
 
-    private int x;
-    private int y;
+    private final int x, y;
 
-    private TileContent tileContent;
-    private List<TileItem> tileItems = new ArrayList<>();
+    private final TileContent tileContent;
+    private final List<TileItem> tileItems;
 
-    public Tile(final int x, final int y, final TileContent tileContent) {
+    Tile(final int x, final int y, final TileContent tileContent, final List<TileItem> tileItems) {
         this.x = x;
         this.y = y;
         this.tileContent = tileContent;
+        this.tileItems = Collections.unmodifiableList(tileItems);
     }
 
     public boolean hasSameObjects(final Tile tile) {
-        return Objects.equals(tileContent.getTileObjects(), tile.tileContent.getTileObjects());
-    }
-
-    public void addTileItem(final TileItem tileItem) {
-        tileItems.add(tileItem);
+        return Objects.equals(tileContent, tile.tileContent);
     }
 
     @Override

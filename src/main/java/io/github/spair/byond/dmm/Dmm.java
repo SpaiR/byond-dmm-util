@@ -13,10 +13,14 @@ import lombok.Getter;
 import lombok.val;
 
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+/**
+ * Abstraction over {@link DmmData} and {@link Dme} classes. Helps to get items and there vars from one point.
+ */
 @Data
 public class Dmm implements Iterable<Tile> {
 
@@ -27,8 +31,7 @@ public class Dmm implements Iterable<Tile> {
 
     private final String dmeRootPath;
     private final int iconSize;
-    private final int maxX;
-    private final int maxY;
+    private final int maxX, maxY;
 
     public Dmm(final DmmData dmmData, final Dme dme) {
         dmeRootPath = dme.getAbsoluteRootPath();
@@ -42,14 +45,13 @@ public class Dmm implements Iterable<Tile> {
         for (int x = 1; x <= maxX; x++) {
             for (int y = maxY; y >= 1; y--) {
                 val tileContent = dmmData.getTileContentByLocation(TileLocation.of(x, y));
-                val tile = new Tile(x, y, tileContent);
+                val tileItems = new ArrayList<TileItem>();
 
                 for (val tileObject : tileContent) {
-                    val tileItem = new TileItem(x, y, dme.getItem(tileObject.getType()), tileObject.getVars());
-                    tile.addTileItem(tileItem);
+                    tileItems.add(new TileItem(x, y, dme.getItem(tileObject.getType()), tileObject.getVars()));
                 }
 
-                tiles[y - 1][x - 1] = tile;
+                tiles[y - 1][x - 1] = new Tile(x, y, tileContent, tileItems);
             }
         }
     }

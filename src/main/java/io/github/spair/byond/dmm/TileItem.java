@@ -7,26 +7,26 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
 @Getter
 @ToString(exclude = "dmeItem")
 @EqualsAndHashCode
-@SuppressWarnings("unused")
 public class TileItem {
 
     @Getter(AccessLevel.NONE)
-    private DmeItem dmeItem;
+    private final DmeItem dmeItem;
 
-    private int x, y;
+    private final int x, y;
     private Map<String, String> customVars;
 
-    public TileItem(final int x, final int y, final DmeItem dmeItem, final Map<String, String> customVars) {
+    TileItem(final int x, final int y, final DmeItem dmeItem, final Map<String, String> customVars) {
         this.x = x;
         this.y = y;
         this.dmeItem = dmeItem;
-        this.customVars = customVars;
+        this.customVars = Collections.unmodifiableMap(customVars);
     }
 
     public String getType() {
@@ -42,7 +42,7 @@ public class TileItem {
     }
 
     public boolean hasOriginalVar(final String name) {
-        return dmeItem.getVars().containsKey(name);
+        return getOriginalVars().containsKey(name);
     }
 
     public String getCustomVar(final String name) {
@@ -66,7 +66,7 @@ public class TileItem {
     }
 
     public Map<String, String> getOriginalVars() {
-        return dmeItem.getVars();
+        return dmeItem.getAllVars();
     }
 
     public String getOriginalVar(final String name) {
