@@ -6,7 +6,7 @@ import io.github.spair.byond.dme.parser.DmeParser;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.ResourceUtil;
-import io.github.spair.byond.dmm.parser.DmmParser;
+import io.github.spair.dmm.io.reader.DmmReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public class DmmRenderTest {
     @BeforeClass
     public static void initialize() throws Exception {
         Dme dme = DmeParser.parse(ResourceUtil.readResourceFile(DME_PATH));
-        DMM = DmmParser.parse(ResourceUtil.readResourceFile(MAP_PATH), dme);
+        DMM = new Dmm(DmmReader.readMap(ResourceUtil.readResourceFile(MAP_PATH)), dme);
 
         FULL_RENDER_IMG = ImageIO.read(ResourceUtil.readResourceFile(FULL_RENDER_IMG_PATH));
         PARTIAL_RENDER_IMG = ImageIO.read(ResourceUtil.readResourceFile(PARTIAL_RENDER_IMG_PATH));

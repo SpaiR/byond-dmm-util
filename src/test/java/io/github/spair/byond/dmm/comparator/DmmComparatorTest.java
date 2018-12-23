@@ -6,7 +6,7 @@ import io.github.spair.byond.dme.DmeItem;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.ResourceUtil;
-import io.github.spair.byond.dmm.parser.DmmParser;
+import io.github.spair.dmm.io.reader.DmmReader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,8 +31,8 @@ public class DmmComparatorTest {
 
     @Test
     public void testCompare() {
-        Dmm orig = DmmParser.parse(ResourceUtil.readResourceFile("dmm_diff_orig.dmm"), dme);
-        Dmm mod = DmmParser.parse(ResourceUtil.readResourceFile("dmm_diff_mod.dmm"), dme);
+        Dmm orig = new Dmm(DmmReader.readMap(ResourceUtil.readResourceFile("dmm_diff_orig.dmm")), dme);
+        Dmm mod = new Dmm(DmmReader.readMap(ResourceUtil.readResourceFile("dmm_diff_mod.dmm")), dme);
 
         Optional<MapRegion> diffRegion = DmmComparator.compare(orig, mod);
 
@@ -44,8 +44,8 @@ public class DmmComparatorTest {
 
     @Test
     public void testCompareByChunks() {
-        Dmm orig = DmmParser.parse(ResourceUtil.readResourceFile("dmm_diff_big_orig.dmm"), dme);
-        Dmm mod = DmmParser.parse(ResourceUtil.readResourceFile("dmm_diff_big_mod.dmm"), dme);
+        Dmm orig = new Dmm(DmmReader.readMap(ResourceUtil.readResourceFile("dmm_diff_big_orig.dmm")), dme);
+        Dmm mod = new Dmm(DmmReader.readMap(ResourceUtil.readResourceFile("dmm_diff_big_mod.dmm")), dme);
 
         Optional<List<MapRegion>> diffRegions = DmmComparator.compareByChunks(orig, mod);
 

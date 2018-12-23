@@ -1,35 +1,57 @@
 package io.github.spair.byond.dmm;
 
+import io.github.spair.byond.ByondTypes;
+import io.github.spair.byond.ByondVars;
+import io.github.spair.byond.dme.Dme;
+import io.github.spair.byond.dmi.Dmi;
+import io.github.spair.dmm.io.DmmData;
 import io.github.spair.dmm.io.TileContent;
+import io.github.spair.dmm.io.TileLocation;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.val;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Data
-@SuppressWarnings("WeakerAccess")
 public class Dmm implements Iterable<Tile> {
 
-    public static final int DEFAULT_ICON_SIZE = 32;
-
-    private Map<String, TileContent> tileContents;
+    private final Map<String, TileContent> tileContents;
 
     @Getter(AccessLevel.NONE)
-    private Tile[][] tiles;
+    private final Tile[][] tiles;
 
-    private String dmeRootPath = "";
+    private final String dmeRootPath;
+    private final int iconSize;
+    private final int maxX;
+    private final int maxY;
 
-    private int iconSize;
-    private int maxX;
-    private int maxY;
+    public Dmm(final DmmData dmmData, final Dme dme) {
+        dmeRootPath = dme.getAbsoluteRootPath();
+        iconSize = dme.getItem(ByondTypes.WORLD).getVarInt(ByondVars.ICON_SIZE).orElse(Dmi.DEFAULT_SPRITE_SIZE);
+        maxX = dmmData.getMaxX();
+        maxY = dmmData.getMaxY();
+        tileContents = Collections.unmodifiableMap(dmmData.getTileContentsByKey());
 
-    public void setTiles(final Tile[][] tiles) {
-        this.tiles = tiles;
-        maxX = tiles[0].length;
-        maxY = tiles.length;
+        tiles = new Tile[maxY][maxX];
+
+        for (int x = 1; x <= maxX; x++) {
+            for (int y = maxY; y >= 1; y--) {
+                val tileContent = dmmData.getTileContentByLocation(TileLocation.of(x, y));
+                val tile = new Tile(x, y, tileContent);
+
+                for (val tileObject : tileContent) {
+                    val tileItem = new TileItem(x, y, dme.getItem(tileObject.getType()), tileObject.getVars());
+                    tile.addTileItem(tileItem);
+                }
+
+                tiles[y - 1][x - 1] = tile;
+            }
+        }
     }
 
     public Tile getTile(final int x, final int y) {
