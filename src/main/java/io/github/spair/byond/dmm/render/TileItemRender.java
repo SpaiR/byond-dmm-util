@@ -51,8 +51,8 @@ final class TileItemRender {
 
         // BYOND renders objects from bottom to top, while DmmRender do it from top to bottom.
         // This additional shift helps to properly render objects, which have sprite height more then world icon_size.
-        if (iconSize < itemDmi.getMetadata().getSpritesHeight()) {
-            itemImage.setYShift(itemImage.getYShift() + itemDmi.getMetadata().getSpritesHeight() - iconSize);
+        if (iconSize < itemDmi.getSpriteHeight()) {
+            itemImage.setYShift(itemImage.getYShift() + itemDmi.getSpriteHeight() - iconSize);
         }
 
         applyPixelEffects(item, itemImage.getImage());

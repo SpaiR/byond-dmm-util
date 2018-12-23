@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 final class VarExtractor {
 
     static final String EMPTY_STRING = "";
-    static final String DEFAULT_LAYER_PLANE = "0";
+    static final double DEFAULT_LAYER_PLANE = 0;
     static final int DEFAULT_DIR = 2;
     static final Double DEFAULT_PIXEL_SHIFT = 0.0;
     static final int DEFAULT_ALPHA = 255;
@@ -21,39 +21,39 @@ final class VarExtractor {
     private static final String RGB_PREFIX = "rgb(";
 
     static double plane(final TileItem item) {
-        return Double.parseDouble(item.getCustomOrOriginalVar(ByondVars.PLANE).orElse(DEFAULT_LAYER_PLANE));
+        return item.getCustomOrOriginalVarDouble(ByondVars.PLANE).orElse(DEFAULT_LAYER_PLANE);
     }
 
     static double layer(final TileItem item) {
-        return Double.parseDouble(item.getCustomOrOriginalVar(ByondVars.LAYER).orElse(DEFAULT_LAYER_PLANE));
+        return item.getCustomOrOriginalVarDouble(ByondVars.LAYER).orElse(DEFAULT_LAYER_PLANE);
     }
 
     static String icon(final TileItem item) {
-        return item.getCustomOrOriginalVarUnquoted(ByondVars.ICON).orElse(EMPTY_STRING);
+        return item.getCustomOrOriginalVarFilePath(ByondVars.ICON).orElse(EMPTY_STRING);
     }
 
     static String iconState(final TileItem item) {
-        return item.getCustomOrOriginalVarUnquoted(ByondVars.ICON_STATE).orElse(EMPTY_STRING);
+        return item.getCustomOrOriginalVarText(ByondVars.ICON_STATE).orElse(EMPTY_STRING);
     }
 
     static SpriteDir dir(final TileItem item) {
-        return SpriteDir.valueOfByondDir(item.getCustomOrOriginalVarAsInt(ByondVars.DIR).orElse(DEFAULT_DIR));
+        return SpriteDir.valueOfByondDir(item.getCustomOrOriginalVarInt(ByondVars.DIR).orElse(DEFAULT_DIR));
     }
 
     static int pixelX(final TileItem item) {
-        return item.getCustomOrOriginalVarAsDouble(ByondVars.PIXEL_X).orElse(DEFAULT_PIXEL_SHIFT).intValue();
+        return item.getCustomOrOriginalVarDouble(ByondVars.PIXEL_X).orElse(DEFAULT_PIXEL_SHIFT).intValue();
     }
 
     static int pixelY(final TileItem item) {
-        return item.getCustomOrOriginalVarAsDouble(ByondVars.PIXEL_Y).orElse(DEFAULT_PIXEL_SHIFT).intValue();
+        return item.getCustomOrOriginalVarDouble(ByondVars.PIXEL_Y).orElse(DEFAULT_PIXEL_SHIFT).intValue();
     }
 
     static int alpha(final TileItem item) {
-        return item.getCustomOrOriginalVarAsInt(ByondVars.ALPHA).orElse(DEFAULT_ALPHA);
+        return item.getCustomOrOriginalVarInt(ByondVars.ALPHA).orElse(DEFAULT_ALPHA);
     }
 
     static String color(final TileItem item) {
-        String colorValue = item.getCustomOrOriginalVar(ByondVars.COLOR).orElse(EMPTY_STRING);
+        String colorValue = item.getCustomOrOriginalVar(ByondVars.COLOR);
         if (ByondTypes.NULL.equals(colorValue) || colorValue.isEmpty()) {
             return "";
         }

@@ -1,6 +1,6 @@
 package io.github.spair.byond.dmm;
 
-import io.github.spair.byond.VarUtil;
+import io.github.spair.byond.VarWrapper;
 import io.github.spair.byond.dme.DmeItem;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Getter
 @ToString(exclude = "dmeItem")
 @EqualsAndHashCode
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public class TileItem {
 
     @Getter(AccessLevel.NONE)
@@ -45,55 +45,67 @@ public class TileItem {
         return dmeItem.getVars().containsKey(name);
     }
 
-    public Optional<String> getCustomVar(final String name) {
-        return VarUtil.optionalNullable(customVars.get(name));
+    public String getCustomVar(final String name) {
+        return VarWrapper.rawValue(customVars.get(name));
     }
 
-    public Optional<String> getCustomVarUnquoted(final String name) {
-        return VarUtil.optionalUnquoted(customVars.get(name));
+    public Optional<String> getCustomVarText(final String name) {
+        return VarWrapper.optionalText(customVars.get(name));
     }
 
-    public Optional<Integer> getCustomVarAsInt(final String name) {
-        return VarUtil.optionalInt(customVars.get(name));
+    public Optional<String> getCustomVarFilePath(final String name) {
+        return VarWrapper.optionalFilePath(customVars.get(name));
     }
 
-    public Optional<Double> getCustomVarAsDouble(final String name) {
-        return VarUtil.optionalDouble(customVars.get(name));
+    public Optional<Integer> getCustomVarInt(final String name) {
+        return VarWrapper.optionalInt(customVars.get(name));
+    }
+
+    public Optional<Double> getCustomVarDouble(final String name) {
+        return VarWrapper.optionalDouble(customVars.get(name));
     }
 
     public Map<String, String> getOriginalVars() {
         return dmeItem.getVars();
     }
 
-    public Optional<String> getOriginalVar(final String name) {
+    public String getOriginalVar(final String name) {
         return dmeItem.getVar(name);
     }
 
-    public Optional<String> getOriginalVarUnquoted(final String name) {
-        return dmeItem.getVarUnquoted(name);
+    public Optional<String> getOriginalVarText(final String name) {
+        return dmeItem.getVarText(name);
     }
 
-    public Optional<Integer> getOriginalVarAsInt(final String name) {
-        return dmeItem.getVarAsInt(name);
+    public Optional<String> getOriginalVarFilePath(final String name) {
+        return dmeItem.getVarFilePath(name);
     }
 
-    public Optional<Double> getOriginalVarAsDouble(final String name) {
-        return dmeItem.getVarAsDouble(name);
+    public Optional<Integer> getOriginalVarInt(final String name) {
+        return dmeItem.getVarInt(name);
     }
 
-    public Optional<String> getCustomOrOriginalVar(final String name) {
-        return VarUtil.optionalNullable(customVars.getOrDefault(name, dmeItem.getVars().get(name)));
+    public Optional<Double> getOriginalVarDouble(final String name) {
+        return dmeItem.getVarDouble(name);
     }
 
-    public Optional<String> getCustomOrOriginalVarUnquoted(final String name) {
-        return VarUtil.optionalUnquoted(customVars.getOrDefault(name, dmeItem.getVars().get(name)));
+    public String getCustomOrOriginalVar(final String name) {
+        return VarWrapper.rawValue(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<Integer> getCustomOrOriginalVarAsInt(final String name) {
-        return VarUtil.optionalInt(customVars.getOrDefault(name, dmeItem.getVars().get(name)));
+    public Optional<String> getCustomOrOriginalVarText(final String name) {
+        return VarWrapper.optionalText(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<Double> getCustomOrOriginalVarAsDouble(final String name) {
-        return VarUtil.optionalDouble(customVars.getOrDefault(name, dmeItem.getVars().get(name)));
+    public Optional<String> getCustomOrOriginalVarFilePath(final String name) {
+        return VarWrapper.optionalFilePath(customVars.getOrDefault(name, dmeItem.getVar(name)));
+    }
+
+    public Optional<Integer> getCustomOrOriginalVarInt(final String name) {
+        return VarWrapper.optionalInt(customVars.getOrDefault(name, dmeItem.getVar(name)));
+    }
+
+    public Optional<Double> getCustomOrOriginalVarDouble(final String name) {
+        return VarWrapper.optionalDouble(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 }

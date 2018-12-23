@@ -34,7 +34,7 @@ public final class DmmParser {
 
     private void prepareDmm(final Dme dme) {
         dmm.setDmeRootPath(dme.getAbsoluteRootPath());
-        dmm.setIconSize(dme.getItem(ByondTypes.WORLD).getVarAsInt(ByondVars.ICON_SIZE).orElse(Dmm.DEFAULT_ICON_SIZE));
+        dmm.setIconSize(dme.getItem(ByondTypes.WORLD).getVarInt(ByondVars.ICON_SIZE).orElse(Dmm.DEFAULT_ICON_SIZE));
     }
 
     private void processDmmData(final DmmData dmmData, final Dme dme) {
