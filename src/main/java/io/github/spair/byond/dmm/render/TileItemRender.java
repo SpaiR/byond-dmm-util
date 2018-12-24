@@ -13,13 +13,12 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 final class TileItemRender {
 
     private final int iconSize;
     private final String dmeRootPath;
-    private Map<String, Dmi> dmiCache = new HashMap<>();
+    private final Map<String, Dmi> dmiCache = new HashMap<>();
 
     private final DmiSlurper dmiSlurper = new DmiSlurper();
 
@@ -28,19 +27,19 @@ final class TileItemRender {
         this.dmeRootPath = dmeRootPath;
     }
 
-    Optional<TileItemImage> renderItem(final TileItem item) {
+    TileItemImage renderItem(final TileItem item) {
         val itemIcon = VarExtractor.icon(item);
         val itemIconState = VarExtractor.iconState(item);
 
         if (itemIcon.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
 
         val itemDmi = getCachedDmi(itemIcon);
         val itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
 
         if (itemSprite == null) {  // TODO: add placeholder for items without sprites
-            return Optional.empty();
+            return null;
         }
 
         val itemImage = new TileItemImage();
@@ -57,7 +56,7 @@ final class TileItemRender {
 
         applyPixelEffects(item, itemImage.getImage());
 
-        return Optional.of(itemImage);
+        return itemImage;
     }
 
     private void applyPixelEffects(final TileItem item, final BufferedImage img) {
