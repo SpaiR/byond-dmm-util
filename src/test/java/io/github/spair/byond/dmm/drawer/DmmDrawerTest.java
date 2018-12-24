@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.render;
+package io.github.spair.byond.dmm.drawer;
 
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.dme.Dme;
@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 
 import static org.junit.Assert.assertEquals;
 
-public class DmmRenderTest {
+public class DmmDrawerTest {
 
     private static final String DME_PATH = "render_proj/proj.dme";
     private static final String MAP_PATH = "render_proj/map.dmm";
@@ -56,43 +56,43 @@ public class DmmRenderTest {
     }
 
     @Test
-    public void testRenderToImageWithFullRender() {
-        assertRgb(FULL_RENDER_IMG, DmmRender.render(DMM));
+    public void testDrawMapToImageWithFullRender() {
+        assertRgb(FULL_RENDER_IMG, DmmDrawer.drawMap(DMM));
     }
 
     @Test
-    public void testRenderToImageWithPartialRender() {
-        assertRgb(PARTIAL_RENDER_IMG, DmmRender.render(DMM, FilterMode.IGNORE, ByondTypes.AREA));
+    public void testDrawMapToImageWithPartialRender() {
+        assertRgb(PARTIAL_RENDER_IMG, DmmDrawer.drawMap(DMM, FilterMode.IGNORE, ByondTypes.AREA));
     }
 
     @Test
-    public void testRenderToImageWithFullRenderAndMapRegion() {
-        assertRgb(FULL_RENDER_REGION_IMG, DmmRender.render(DMM, MapRegion.of(2, 5)));
+    public void testDrawMapToImageWithFullRenderAndMapRegion() {
+        assertRgb(FULL_RENDER_REGION_IMG, DmmDrawer.drawMap(DMM, MapRegion.of(2, 5)));
     }
 
     @Test
-    public void testRenderToImageWithPartialRenderAndMapRegion() {
-        assertRgb(PARTIAL_RENDER_REGION_IMG, DmmRender.render(DMM, MapRegion.of(2, 5), FilterMode.IGNORE, ByondTypes.AREA));
+    public void testDrawMapToImageWithPartialRenderAndMapRegion() {
+        assertRgb(PARTIAL_RENDER_REGION_IMG, DmmDrawer.drawMap(DMM, MapRegion.of(2, 5), FilterMode.IGNORE, ByondTypes.AREA));
     }
 
     @Test
-    public void testRenderToImageWithTypesWithFullRender() {
-        assertRgb(FULL_RENDER_WITH_TYPES_IMG, DmmRender.render(DMM, FilterMode.INCLUDE, ByondTypes.TURF));
+    public void testDrawMapToImageWithTypesWithFullRender() {
+        assertRgb(FULL_RENDER_WITH_TYPES_IMG, DmmDrawer.drawMap(DMM, FilterMode.INCLUDE, ByondTypes.TURF));
     }
 
     @Test
-    public void testRenderToImageWithTypesAndMapRegion() {
-        assertRgb(FULL_RENDER_REGION_WITH_TYPES_IMG, DmmRender.render(DMM, MapRegion.of(2, 5), FilterMode.INCLUDE, ByondTypes.TURF));
+    public void testDrawMapToImageWithTypesAndMapRegion() {
+        assertRgb(FULL_RENDER_REGION_WITH_TYPES_IMG, DmmDrawer.drawMap(DMM, MapRegion.of(2, 5), FilterMode.INCLUDE, ByondTypes.TURF));
     }
 
     @Test
-    public void testRenderToImageWithEqTypesWithFullRender() {
-        assertRgb(FULL_RENDER_WITH_EQ_TYPES_IMG, DmmRender.render(DMM, FilterMode.EQUAL, "/obj/item"));
+    public void testDrawMapToImageWithEqTypesWithFullRender() {
+        assertRgb(FULL_RENDER_WITH_EQ_TYPES_IMG, DmmDrawer.drawMap(DMM, FilterMode.EQUAL, "/obj/item"));
     }
 
     @Test
-    public void testRenderToImageWithEqTypesAndMapRegion() {
-        assertRgb(FULL_RENDER_REGION_WITH_EQ_TYPES_IMG, DmmRender.render(DMM, MapRegion.of(2, 5), FilterMode.EQUAL, "/obj/item"));
+    public void testDrawMapToImageWithEqTypesAndMapRegion() {
+        assertRgb(FULL_RENDER_REGION_WITH_EQ_TYPES_IMG, DmmDrawer.drawMap(DMM, MapRegion.of(2, 5), FilterMode.EQUAL, "/obj/item"));
     }
 
     private void assertRgb(final BufferedImage expected, final BufferedImage actual) {

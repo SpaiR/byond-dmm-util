@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.render;
+package io.github.spair.byond.dmm.drawer;
 
 import io.github.spair.byond.ByondTypes;
 import io.github.spair.byond.ByondVars;
@@ -67,7 +67,7 @@ final class Drawer {
             }
         }
 
-        // Sort items on layers to render them in proper order.
+        // Sort items on layers to drawMap them in proper order.
         for (val plane : planesLayers.values()) {
             for (val layer : plane.values()) {
                 layer.sort(comparator);

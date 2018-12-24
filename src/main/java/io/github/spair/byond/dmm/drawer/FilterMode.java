@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.render;
+package io.github.spair.byond.dmm.drawer;
 
 public enum FilterMode {
     /** No filter will be applied */

@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.render;
+package io.github.spair.byond.dmm.drawer;
 
 import io.github.spair.byond.ByondTypes;
 import lombok.val;

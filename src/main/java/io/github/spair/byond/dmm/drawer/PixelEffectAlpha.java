@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.render;
+package io.github.spair.byond.dmm.drawer;
 
 @SuppressWarnings("checkstyle:MagicNumber")
 final class PixelEffectAlpha extends PixelEffect {
