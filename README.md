@@ -6,7 +6,11 @@
 
 ## About 
 
-Library to parse and render DMM files.
+Library with util methods for `dmm` files.
+
+Features:
+ - able to render `dmm` files into proper image
+ - compare two maps to get difference between them
 
 ## Installation
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-dmm-util.svg?style=flat)](https://search.maven.org/search?q=a:byond-dmm-util)
@@ -30,20 +34,18 @@ compile 'io.github.spair:byond-dmm-util:${last.version}'
 
 ## How To Use
 
-### DmmParser
+The main class you will use is `Dmm`. To create it you should provide to it constructor `DmmData` and `Dme` objects.
+The info how to get them could be found [here](https://github.com/SpaiR/dmm-io) and [here](https://github.com/SpaiR/byond-dme-parser).
 
-Class to parse `.dmm` file. As an arguments takes `File` which is dmm file itself and `Dme` object,
-taken from [byond-dme-parser](https://github.com/SpaiR/byond-dme-parser) library.
+### DmmDrawer
 
-### DmmRender
-
-Renders `Dmm` object into `BufferedImage`. Has ability to render specific region of map or apply object filter to exclude it from render result. For example: 
+Renders `Dmm` object into `BufferedImage`. Has ability to render specific region of map or apply object filter to exclude specific types from render result. For example: 
 ```
-DmmRender.render(dmm, MapRegion.of(1, 5), FilterMode.IGNORE, "/area", "/turf")
+DmmDrawer.drawMap(dmm, MapRegion.of(1, 5), FilterMode.IGNORE, "/area", "/turf")
 ```
 
-### DmmComparator
+### DmmDiffer
 
-Compares two `Dmm` objects and returns `MapRegion` with specific area of differences.
+Compares two `Dmm` objects and returns list of `DiffPoint` or `MapRegion` with specific area of differences.
 
 More could be found in [JavaDoc](https://www.javadoc.io/doc/io.github.spair/byond-dmm-util).
