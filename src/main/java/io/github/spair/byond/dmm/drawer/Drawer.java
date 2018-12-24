@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.Comparator;
 
@@ -29,7 +28,7 @@ final class Drawer {
     private final FilterMode filterMode;
     private final Set<String> types;
 
-    private final Map<Double, Map<Double, List<TileItem>>> planesLayers = new TreeMap<>();
+    private final TreeMap<Double, TreeMap<Double, List<TileItem>>> planesLayers = new TreeMap<>();
     private final RenderPriorityComparator comparator = new RenderPriorityComparator();
 
     private final int iconSize;
@@ -67,7 +66,7 @@ final class Drawer {
             }
         }
 
-        // Sort items on layers to drawMap them in proper order.
+        // Sort items on layers to render them in proper order.
         for (val plane : planesLayers.values()) {
             for (val layer : plane.values()) {
                 layer.sort(comparator);

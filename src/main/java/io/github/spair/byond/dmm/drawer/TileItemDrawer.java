@@ -50,8 +50,8 @@ final class TileItemDrawer {
         itemImage.setYShift(item.getCustomOrOriginalVarDouble(ByondVars.PIXEL_Y).orElse(0.0).intValue());
         itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
 
-        // BYOND renders objects from bottom to top, while DmmRender do it from top to bottom.
-        // This additional shift helps to properly drawMap objects, which have sprite height more then world icon_size.
+        // BYOND renders objects from bottom to top, while DmmDrawer do it from top to bottom.
+        // This additional shift helps to properly render objects, which have sprite height more then world icon_size.
         if (iconSize < itemDmi.getSpriteHeight()) {
             itemImage.setYShift(itemImage.getYShift() + itemDmi.getSpriteHeight() - iconSize);
         }
