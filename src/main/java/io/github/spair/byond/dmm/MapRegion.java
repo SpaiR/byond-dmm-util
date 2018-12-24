@@ -1,136 +1,52 @@
 package io.github.spair.byond.dmm;
 
-import io.github.spair.byond.dmm.comparator.DiffPoint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 @Data
-@SuppressWarnings("WeakerAccess")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MapRegion {
 
-    private static final int EXPAND_DISTANCE = 10;
+    private final int lowerX;
+    private final int lowerY;
 
-    private int lowerX;
-    private int lowerY;
-
-    private int upperX;
-    private int upperY;
-
-    private int width;
-    private int height;
-
-    private Set<DiffPoint> diffPoints;
-
-    private MapRegion(final int lowerX, final int lowerY, final int upperX, final int upperY) {
-        this.lowerX = lowerX;
-        this.lowerY = lowerY;
-        this.upperX = upperX;
-        this.upperY = upperY;
-
-        this.diffPoints = new HashSet<>();
-
-        calculateWidth();
-        calculateHeight();
-    }
+    private final int upperX;
+    private final int upperY;
 
     public static MapRegion of(final int lowerPoint, final int upperPoint) {
         return of(lowerPoint, lowerPoint, upperPoint, upperPoint);
     }
 
     public static MapRegion of(final int lowerX, final int lowerY, final int upperX, final int upperY) {
-        if (lowerX > upperX || lowerY > upperY) {
-            throw new IllegalArgumentException("Lower point could not be the bigger than upper one."
-                    + " Lower X: " + lowerX + ", lower Y: " + lowerY + ", upper X: " + upperX + ", upper Y: " + upperY);
-        }
-        if (lowerX <= 0 || lowerY <= 0) {
-            throw new IllegalArgumentException("Lower point could not be lesser then 0."
-                    + " Lower X: " + lowerX + ", lower Y: " + lowerY);
-        }
+        if (lowerX > upperX)
+            throw new IllegalArgumentException(String.format("Lower X (%d) can't be higher than upper X (%d)", lowerX, upperX));
+        if (lowerY > upperY)
+            throw new IllegalArgumentException(String.format("Lower Y (%d) can't be higher than upper Y (%d)", lowerY, upperY));
+        if (lowerX <= 0)
+            throw new IllegalArgumentException(String.format("Lower X (%d) can't be lesser then 0", lowerX));
+        if (lowerY <= 0)
+            throw new IllegalArgumentException(String.format("Lower Y (%d) can't be lesser then 0", lowerY));
         return new MapRegion(lowerX, lowerY, upperX, upperY);
     }
 
     public static MapRegion singlePoint(final int x, final int y) {
-        return MapRegion.of(x, y, x, y);
+        return of(x, y, x, y);
     }
 
     public boolean isSinglePoint() {
         return lowerX == upperX && lowerY == upperY;
     }
 
-    public MapRegion addDiffPoint(final DiffPoint diffPoint) {
-        diffPoints.add(diffPoint);
-        return this;
-    }
-
-    public MapRegion addDiffPoint(final Collection<DiffPoint> diffPoints) {
-        this.diffPoints.addAll(diffPoints);
-        return this;
-    }
-
-    public MapRegion addDiffPoint(final int x, final int y) {
-        this.diffPoints.add(DiffPoint.of(x, y));
-        return this;
-    }
-
     public boolean isInBounds(final int x, final int y) {
-        return (isInBoundsOfLowerX(x) && (isInBoundsOfLowerY(y) || isInBoundsOfUpperY(y)))
-                || (isInBoundsOfUpperX(x) && (isInBoundsOfLowerY(y) || isInBoundsOfUpperY(y)))
-                || (isInBoundsOfLowerY(y) && (isInBoundsOfLowerX(x) || isInBoundsOfUpperX(x)))
-                || (isInBoundsOfUpperY(y) && (isInBoundsOfLowerX(x) || isInBoundsOfUpperX(x)));
+        return lowerX <= x && upperX >= x && lowerY <= y && upperY >= y;
     }
 
-    public void expandBounds(final int x, final int y) {
-        boolean xBoundsChanged = true;
-        boolean yBoundsChanged = true;
-
-        if (isInBoundsOfLowerX(x)) {
-            lowerX = Math.min(x, lowerX);
-        } else if (isInBoundsOfUpperX(x)) {
-            upperX = Math.max(x, upperX);
-        } else {
-            xBoundsChanged = false;
-        }
-
-        if (isInBoundsOfLowerY(y)) {
-            lowerY = Math.min(y, lowerY);
-        } else if (isInBoundsOfUpperY(y)) {
-            upperY = Math.max(y, upperY);
-        } else {
-            yBoundsChanged = false;
-        }
-
-        if (!xBoundsChanged && !yBoundsChanged) {
-            throw new IllegalArgumentException("Args are not in bounds of region. X: " + x + " Y:" + y);
-        }
-
-        calculateWidth();
-        calculateHeight();
+    public int getWidth() {
+        return Math.max(upperX - lowerX, 1);
     }
 
-    private boolean isInBoundsOfLowerX(final int x) {
-        return lowerX - x > 0 && lowerX - x <= EXPAND_DISTANCE;
-    }
-
-    private boolean isInBoundsOfLowerY(final int y) {
-        return lowerY - y > 0 && lowerY - y <= EXPAND_DISTANCE;
-    }
-
-    private boolean isInBoundsOfUpperX(final int x) {
-        return Math.abs(x - upperX) <= EXPAND_DISTANCE;
-    }
-
-    private boolean isInBoundsOfUpperY(final int y) {
-        return Math.abs(y - upperY) <= EXPAND_DISTANCE;
-    }
-
-    private void calculateWidth() {
-        width = Math.max(upperX - lowerX, 1);
-    }
-
-    private void calculateHeight() {
-        height = Math.max(upperY - lowerY, 1);
+    public int getHeight() {
+        return Math.max(upperY - lowerY, 1);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmm.comparator;
+package io.github.spair.byond.dmm.differ;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

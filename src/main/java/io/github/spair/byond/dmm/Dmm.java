@@ -97,13 +97,11 @@ public class Dmm implements Iterable<Tile> {
                 isNewRow = true;
             }
 
-            if (isNewRow) {
+            if (isNewRow)
                 y++;
-            }
 
-            if (x > maxX || y > maxY) {
+            if (x > maxX || y > maxY)
                 throw new NoSuchElementException();
-            }
 
             return tiles[y - 1][x - 1];
         }

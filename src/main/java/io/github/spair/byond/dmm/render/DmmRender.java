@@ -3,10 +3,8 @@ package io.github.spair.byond.dmm.render;
 import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.TileItem;
-import io.github.spair.byond.dmm.comparator.DiffPoint;
 import lombok.val;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 import java.util.HashSet;
@@ -17,7 +15,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Iterator;
 
-@SuppressWarnings("WeakerAccess")
 public final class DmmRender {
 
     private final Planes planes;
@@ -115,30 +112,6 @@ public final class DmmRender {
         return dmmRender.finalImage;
     }
 
-    /**
-     * Renders full map with only diff points of provided {@link MapRegion}.
-     *
-     * @param dmm map to render
-     * @param mapRegion {@link MapRegion} with diff points to render
-     * @return image of rendered diff points
-     */
-    public static BufferedImage renderDiffPoints(final Dmm dmm, final MapRegion mapRegion) {
-        val region = MapRegion.of(1, 1, dmm.getMaxX(), dmm.getMaxY());
-        region.addDiffPoint(mapRegion.getDiffPoints());
-
-        val dmmRender = new DmmRender(dmm, region);
-
-        try {
-            dmmRender.drawDiffPoints(region);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format(
-                    "Unable to render dmm diff points. Dme root path: %s Map region: %s", dmm.getDmeRootPath(), region
-            ), e);
-        }
-
-        return dmmRender.finalImage;
-    }
-
     private void distributeToSortedPlanesAndLayers(final Set<String> types, final FilterMode filterMode) {
         for (val tile : dmm) {
             for (val tileItem : tile) {
@@ -209,23 +182,6 @@ public final class DmmRender {
                     });
                 }
             }
-        }
-
-        finalCanvas.dispose();
-    }
-
-    private void drawDiffPoints(final MapRegion mapRegion) {
-        val iconSize = dmm.getIconSize();
-        val finalCanvas = finalImage.getGraphics();
-
-        finalCanvas.setColor(Color.RED);
-
-        for (DiffPoint diffPoint : mapRegion.getDiffPoints()) {
-            val xPos = (diffPoint.getX() - lowerX) * iconSize;
-            val yPos = (upperY - diffPoint.getY()) * iconSize;
-
-            finalCanvas.drawRect(xPos, yPos, iconSize, iconSize);
-            finalCanvas.fillRect(xPos, yPos, iconSize, iconSize);
         }
 
         finalCanvas.dispose();
