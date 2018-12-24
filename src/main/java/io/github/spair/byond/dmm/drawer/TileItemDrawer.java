@@ -2,17 +2,17 @@ package io.github.spair.byond.dmm.drawer;
 
 import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dmi.Dmi;
-import io.github.spair.byond.dmi.slurper.DmiSlurper;
 import io.github.spair.byond.dmi.DmiSprite;
 import io.github.spair.byond.dmi.SpriteDir;
+import io.github.spair.byond.dmi.slurper.DmiSlurper;
 import io.github.spair.byond.dmm.TileItem;
 import lombok.val;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 final class TileItemDrawer {
@@ -115,9 +115,12 @@ final class TileItemDrawer {
     }
 
     private DmiSprite getItemSprite(final Dmi itemDmi, final String itemIconState, final SpriteDir itemDir) {
+        // fallbacks to get at least some image
+        // both are represent default byond behaviour
         return itemDmi.getStateSprite(itemIconState, itemDir)
                 .orElseGet(() -> itemDmi.getStateSprite(itemIconState)
-                        .orElse(null));
+                        .orElseGet(() -> itemDmi.getStateSprite("")
+                                .orElse(null)));
     }
 
     private BufferedImage deepImageCopy(final BufferedImage img) {
