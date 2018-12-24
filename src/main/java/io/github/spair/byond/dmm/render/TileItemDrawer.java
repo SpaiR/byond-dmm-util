@@ -14,33 +14,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-final class TileItemRender {
+final class TileItemDrawer {
 
     private final int iconSize;
     private final String dmeRootPath;
-    private final Map<String, Dmi> dmiCache = new HashMap<>();
 
+    private final Map<String, Dmi> dmiCache = new HashMap<>();
     private final DmiSlurper dmiSlurper = new DmiSlurper();
 
-    TileItemRender(final int iconSize, final String dmeRootPath) {
+    TileItemDrawer(final int iconSize, final String dmeRootPath) {
         this.iconSize = iconSize;
         this.dmeRootPath = dmeRootPath;
     }
 
-    TileItemImage renderItem(final TileItem item) {
+    TileItemImage drawItem(final TileItem item) {
         val itemIcon = VarExtractor.icon(item);
         val itemIconState = VarExtractor.iconState(item);
 
-        if (itemIcon.isEmpty()) {
+        if (itemIcon.isEmpty())
             return null;
-        }
 
         val itemDmi = getCachedDmi(itemIcon);
-        val itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
-
-        if (itemSprite == null) {  // TODO: add placeholder for items without sprites
+        if (itemDmi == null)
             return null;
-        }
+
+        val itemSprite = getItemSprite(itemDmi, itemIconState, VarExtractor.dir(item));
+        if (itemSprite == null)  // TODO: add placeholder for items without sprites
+            return null;
 
         val itemImage = new TileItemImage();
 
@@ -62,9 +62,8 @@ final class TileItemRender {
     private void applyPixelEffects(final TileItem item, final BufferedImage img) {
         val effectsToApply = getEffectsList(item);
 
-        if (effectsToApply.isEmpty()) {
+        if (effectsToApply.isEmpty())
             return;
-        }
 
         for (int x = 0; x < img.getWidth(); x++) {
             for (int y = 0; y < img.getHeight(); y++) {
@@ -103,7 +102,13 @@ final class TileItemRender {
         if (dmiCache.containsKey(itemIcon)) {
             return dmiCache.get(itemIcon);
         } else {
-            Dmi dmi = dmiSlurper.slurpUp(new File(dmeRootPath + File.separator + itemIcon));
+            File spriteFile = new File(dmeRootPath + File.separator + itemIcon);
+            Dmi dmi = null;
+
+            if (spriteFile.exists()) {
+                dmi = dmiSlurper.slurpUp(spriteFile);
+            }
+
             dmiCache.put(itemIcon, dmi);
             return dmi;
         }

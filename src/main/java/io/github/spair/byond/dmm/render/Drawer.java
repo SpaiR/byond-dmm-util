@@ -32,7 +32,7 @@ final class Drawer {
     private final RenderPriorityComparator comparator = new RenderPriorityComparator();
 
     private final int iconSize;
-    private final TileItemRender itemRender;
+    private final TileItemDrawer itemDrawer;
 
     Drawer(final Dmm dmm, final MapRegion mapRegion, final FilterMode filterMode, final Set<String> types) {
         this.dmm = dmm;
@@ -51,7 +51,7 @@ final class Drawer {
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         this.iconSize = dmm.getIconSize();
-        this.itemRender = new TileItemRender(iconSize, dmm.getDmeRootPath());
+        this.itemDrawer = new TileItemDrawer(iconSize, dmm.getDmeRootPath());
     }
 
     BufferedImage draw() {
@@ -78,7 +78,7 @@ final class Drawer {
         for (val plane : planesLayers.values()) {
             for (val layer : plane.values()) {
                 for (val tileItem : layer) {
-                    val itemImage = itemRender.renderItem(tileItem);
+                    val itemImage = itemDrawer.drawItem(tileItem);
 
                     if (itemImage == null)
                         continue;
