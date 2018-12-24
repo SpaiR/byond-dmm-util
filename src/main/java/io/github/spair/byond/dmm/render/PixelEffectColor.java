@@ -3,14 +3,14 @@ package io.github.spair.byond.dmm.render;
 import java.awt.Color;
 
 @SuppressWarnings("checkstyle:MagicNumber")
-final class ColorPixelEffect extends PixelEffect {
+final class PixelEffectColor extends PixelEffect {
 
     private final int newAlpha;
     private final int newRed;
     private final int newGreen;
     private final int newBlue;
 
-    ColorPixelEffect(final Color color) {
+    PixelEffectColor(final Color color) {
         this.newAlpha = color.getAlpha();
         this.newRed = color.getRed();
         this.newGreen = color.getGreen();

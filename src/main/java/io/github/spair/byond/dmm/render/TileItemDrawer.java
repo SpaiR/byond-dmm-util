@@ -91,9 +91,9 @@ final class TileItemDrawer {
         val alphaValue = item.getCustomOrOriginalVarInt(ByondVars.ALPHA).orElse(255);
 
         if (colorValue != null)
-            effectsList.add(new ColorPixelEffect(colorValue));
+            effectsList.add(new PixelEffectColor(colorValue));
         if (alphaValue != 255)
-            effectsList.add(new AlphaPixelEffect(alphaValue));
+            effectsList.add(new PixelEffectAlpha(alphaValue));
 
         return effectsList;
     }

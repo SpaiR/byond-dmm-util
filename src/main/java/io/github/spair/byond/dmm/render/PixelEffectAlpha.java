@@ -1,11 +1,11 @@
 package io.github.spair.byond.dmm.render;
 
 @SuppressWarnings("checkstyle:MagicNumber")
-final class AlphaPixelEffect extends PixelEffect {
+final class PixelEffectAlpha extends PixelEffect {
 
     private final int newAlpha;
 
-    AlphaPixelEffect(final int newAlpha) {
+    PixelEffectAlpha(final int newAlpha) {
         this.newAlpha = newAlpha;
     }
 
