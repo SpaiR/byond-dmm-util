@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmm.render;
 
 import io.github.spair.byond.ByondTypes;
+import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dmm.Dmm;
 import io.github.spair.byond.dmm.MapRegion;
 import io.github.spair.byond.dmm.TileItem;
@@ -59,8 +60,8 @@ final class Drawer {
         for (val tile : dmm) {
             for (val tileItem : tile) {
                 if (allowedByFilterMode(tileItem, types, filterMode) && isInBounds(tileItem)) {
-                    val itemPlane = VarExtractor.plane(tileItem);
-                    val itemLayer = VarExtractor.layer(tileItem);
+                    val itemPlane = tileItem.getCustomOrOriginalVarDouble(ByondVars.PLANE).orElse(0.0);
+                    val itemLayer = tileItem.getCustomOrOriginalVarDouble(ByondVars.LAYER).orElse(0.0);
                     getPlaneLayer(itemPlane, itemLayer).add(tileItem);
                 }
             }
