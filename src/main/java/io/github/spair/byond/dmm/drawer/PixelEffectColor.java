@@ -23,18 +23,10 @@ final class PixelEffectColor extends PixelEffect {
         int r = (pixel >> 16) & 0xff;
         int g = (pixel >> 8) & 0xff;
         int b = pixel & 0xff;
-
-        float factor = a / 255f;
-
-        a = applyFactor(newAlpha, a, factor);
-        r = applyFactor(newRed, r, factor);
-        g = applyFactor(newGreen, g, factor);
-        b = applyFactor(newBlue, b, factor);
-
+        a = (a * newAlpha) / 255;
+        r = (r * newRed) / 255;
+        g = (g * newGreen) / 255;
+        b = (b * newBlue) / 255;
         return resolvePixel(a, r, g, b);
-    }
-
-    private static int applyFactor(final int newColor, final int oldColor, final float factor) {
-        return newColor == 0 ? 0 : (int) (newColor * (1 - factor) + oldColor * factor);
     }
 }
