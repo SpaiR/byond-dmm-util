@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class TileItem {
         this.x = x;
         this.y = y;
         this.dmeItem = dmeItem;
-        this.customVars = Collections.unmodifiableMap(customVars);
+        this.customVars = customVars;
     }
 
     public String getType() {
@@ -37,75 +36,51 @@ public class TileItem {
         return dmeItem.isType(type);
     }
 
-    public boolean hasCustomVar(final String name) {
-        return customVars.containsKey(name);
-    }
-
-    public boolean hasOriginalVar(final String name) {
-        return getOriginalVars().containsKey(name);
-    }
-
-    public String getCustomVar(final String name) {
-        return VarWrapper.rawValue(customVars.get(name));
-    }
-
-    public Optional<String> getCustomVarText(final String name) {
-        return VarWrapper.optionalText(customVars.get(name));
-    }
-
-    public Optional<String> getCustomVarFilePath(final String name) {
-        return VarWrapper.optionalFilePath(customVars.get(name));
-    }
-
-    public Optional<Integer> getCustomVarInt(final String name) {
-        return VarWrapper.optionalInt(customVars.get(name));
-    }
-
-    public Optional<Double> getCustomVarDouble(final String name) {
-        return VarWrapper.optionalDouble(customVars.get(name));
+    public boolean hasVar(final String name) {
+        return customVars.containsKey(name) || getOriginalVars().containsKey(name);
     }
 
     public Map<String, String> getOriginalVars() {
         return dmeItem.getAllVars();
     }
 
-    public String getOriginalVar(final String name) {
-        return dmeItem.getVar(name);
-    }
-
-    public Optional<String> getOriginalVarText(final String name) {
-        return dmeItem.getVarText(name);
-    }
-
-    public Optional<String> getOriginalVarFilePath(final String name) {
-        return dmeItem.getVarFilePath(name);
-    }
-
-    public Optional<Integer> getOriginalVarInt(final String name) {
-        return dmeItem.getVarInt(name);
-    }
-
-    public Optional<Double> getOriginalVarDouble(final String name) {
-        return dmeItem.getVarDouble(name);
-    }
-
-    public String getCustomOrOriginalVar(final String name) {
+    public String getVar(final String name) {
         return VarWrapper.rawValue(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<String> getCustomOrOriginalVarText(final String name) {
+    public Optional<String> getVarText(final String name) {
         return VarWrapper.optionalText(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<String> getCustomOrOriginalVarFilePath(final String name) {
+    public Optional<String> getVarFilePath(final String name) {
         return VarWrapper.optionalFilePath(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<Integer> getCustomOrOriginalVarInt(final String name) {
+    public Optional<Integer> getVarInt(final String name) {
         return VarWrapper.optionalInt(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<Double> getCustomOrOriginalVarDouble(final String name) {
+    public Optional<Double> getVarDouble(final String name) {
         return VarWrapper.optionalDouble(customVars.getOrDefault(name, dmeItem.getVar(name)));
+    }
+
+    public void setVar(final String name, final String value) {
+        customVars.put(name, value);
+    }
+
+    public void setVarText(final String name, final String value) {
+        customVars.put(name, '"' + value + '"');
+    }
+
+    public void setVarFilePath(final String name, final String value) {
+        customVars.put(name, "'" + value + "'");
+    }
+
+    public void setVar(final String name, final Number value) {
+        customVars.put(name, value.toString());
+    }
+
+    public void setEmptyVar(final String name) {
+        customVars.put(name, "null");
     }
 }

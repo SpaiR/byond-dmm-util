@@ -59,8 +59,8 @@ final class Drawer {
         for (val tile : dmm) {
             for (val tileItem : tile) {
                 if (allowedByFilterMode(tileItem, types, filterMode) && isInBounds(tileItem)) {
-                    val itemPlane = tileItem.getCustomOrOriginalVarDouble(ByondVars.PLANE).orElse(0.0);
-                    val itemLayer = tileItem.getCustomOrOriginalVarDouble(ByondVars.LAYER).orElse(0.0);
+                    val itemPlane = tileItem.getVarDouble(ByondVars.PLANE).orElse(0.0);
+                    val itemLayer = tileItem.getVarDouble(ByondVars.LAYER).orElse(0.0);
                     getPlaneLayer(itemPlane, itemLayer).add(tileItem);
                 }
             }
