@@ -22,16 +22,20 @@ final class TileItemDrawer {
 
     private final Map<String, Dmi> dmiCache = new HashMap<>();
     private final DmiSlurper dmiSlurper = new DmiSlurper();
+    private final RenderShell shell;
 
-    TileItemDrawer(final int iconSize, final String dmeRootPath) {
+    TileItemDrawer(final int iconSize, final String dmeRootPath, final RenderShell shell) {
         this.iconSize = iconSize;
         this.dmeRootPath = dmeRootPath;
+        this.shell = shell;
     }
 
     TileItemImage drawItem(final TileItem item) {
         // No need to do anything since item is invisible.
         if (item.getVarInt(ByondVars.ALPHA).orElse(255) == 0)
             return null;
+
+        shell.executeVarScriptIfAble(item);
 
         val itemIcon = item.getVarFilePath(ByondVars.ICON).orElse("");
         val itemIconState = item.getVarText(ByondVars.ICON_STATE).orElse("");

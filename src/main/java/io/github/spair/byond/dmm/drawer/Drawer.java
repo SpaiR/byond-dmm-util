@@ -8,6 +8,7 @@ import io.github.spair.byond.dmm.TileItem;
 import lombok.val;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
@@ -34,7 +35,7 @@ final class Drawer {
     private final int iconSize;
     private final TileItemDrawer itemDrawer;
 
-    Drawer(final Dmm dmm, final MapRegion mapRegion, final FilterMode filterMode, final Set<String> types) {
+    Drawer(final Dmm dmm, final List<File> scripts, final MapRegion mapRegion, final FilterMode filterMode, final Set<String> types) {
         this.dmm = dmm;
 
         this.filterMode = filterMode;
@@ -51,7 +52,7 @@ final class Drawer {
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         this.iconSize = dmm.getIconSize();
-        this.itemDrawer = new TileItemDrawer(iconSize, dmm.getDmeRootPath());
+        this.itemDrawer = new TileItemDrawer(iconSize, dmm.getDmeRootPath(), new RenderShell(dmm, scripts));
     }
 
     BufferedImage draw() {
