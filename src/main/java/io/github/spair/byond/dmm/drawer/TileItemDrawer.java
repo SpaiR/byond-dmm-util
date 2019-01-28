@@ -32,13 +32,13 @@ final class TileItemDrawer {
 
     TileItemImage drawItem(final TileItem item) {
         // No need to do anything since item is invisible.
-        if (item.getVarInt(ByondVars.ALPHA).orElse(255) == 0)
+        if (item.getVarIntSafe(ByondVars.ALPHA).orElse(255) == 0)
             return null;
 
         shell.executeVarScriptIfAble(item);
 
-        val itemIcon = item.getVarFilePath(ByondVars.ICON).orElse("");
-        val itemIconState = item.getVarText(ByondVars.ICON_STATE).orElse("");
+        val itemIcon = item.getVarFilePathSafe(ByondVars.ICON).orElse("");
+        val itemIconState = item.getVarTextSafe(ByondVars.ICON_STATE).orElse("");
 
         if (itemIcon.isEmpty())
             return null;
@@ -47,15 +47,15 @@ final class TileItemDrawer {
         if (itemDmi == null)
             return null;
 
-        val itemDir = SpriteDir.valueOfByondDir(item.getVarInt(ByondVars.DIR).orElse(SpriteDir.SOUTH.dirValue));
+        val itemDir = SpriteDir.valueOfByondDir(item.getVarIntSafe(ByondVars.DIR).orElse(SpriteDir.SOUTH.dirValue));
         val itemSprite = getItemSprite(itemDmi, itemIconState, itemDir);
         if (itemSprite == null)
             return null;
 
         val itemImage = new TileItemImage();
 
-        itemImage.setXShift(item.getVarDouble(ByondVars.PIXEL_X).orElse(0.0).intValue());
-        itemImage.setYShift(item.getVarDouble(ByondVars.PIXEL_Y).orElse(0.0).intValue());
+        itemImage.setXShift(item.getVarDoubleSafe(ByondVars.PIXEL_X).orElse(0.0).intValue());
+        itemImage.setYShift(item.getVarDoubleSafe(ByondVars.PIXEL_Y).orElse(0.0).intValue());
         itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
 
         // BYOND renders objects from bottom to top, while DmmDrawer do it from top to bottom.
@@ -95,8 +95,8 @@ final class TileItemDrawer {
     private List<PixelEffect> getEffectsList(final TileItem item) {
         val effectsList = new ArrayList<PixelEffect>();
 
-        val colorValue = ColorExtractor.extract(item.getVarText(ByondVars.COLOR).orElse(""));
-        val alphaValue = item.getVarInt(ByondVars.ALPHA).orElse(255);
+        val colorValue = ColorExtractor.extract(item.getVarTextSafe(ByondVars.COLOR).orElse(""));
+        val alphaValue = item.getVarIntSafe(ByondVars.ALPHA).orElse(255);
 
         if (colorValue != null)
             effectsList.add(new PixelEffectColor(colorValue));

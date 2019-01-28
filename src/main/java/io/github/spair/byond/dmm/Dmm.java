@@ -35,7 +35,7 @@ public class Dmm implements Iterable<Tile> {
 
     public Dmm(final DmmData dmmData, final Dme dme) {
         dmeRootPath = dme.getAbsoluteRootPath();
-        iconSize = dme.getItem(ByondTypes.WORLD).getVarInt(ByondVars.ICON_SIZE).orElse(Dmi.DEFAULT_SPRITE_SIZE);
+        iconSize = dme.getItem(ByondTypes.WORLD).getVarIntSafe(ByondVars.ICON_SIZE).orElse(Dmi.DEFAULT_SPRITE_SIZE);
         maxX = dmmData.getMaxX();
         maxY = dmmData.getMaxY();
         tileContents = Collections.unmodifiableMap(dmmData.getTileContentsByKey());

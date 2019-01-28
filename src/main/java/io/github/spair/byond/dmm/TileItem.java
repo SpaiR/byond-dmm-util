@@ -46,20 +46,44 @@ public class TileItem {
         return VarWrapper.rawValue(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<String> getVarText(final String name) {
+    public String getVarText(final String name) {
+        return getVarTextSafe(name).get();
+    }
+
+    public Optional<String> getVarTextSafe(final String name) {
         return VarWrapper.optionalText(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<String> getVarFilePath(final String name) {
+    public String getVarFilePath(final String name) {
+        return getVarFilePathSafe(name).get();
+    }
+
+    public Optional<String> getVarFilePathSafe(final String name) {
         return VarWrapper.optionalFilePath(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<Integer> getVarInt(final String name) {
+    public Integer getVarInt(final String name) {
+        return getVarIntSafe(name).get();
+    }
+
+    public Optional<Integer> getVarIntSafe(final String name) {
         return VarWrapper.optionalInt(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
-    public Optional<Double> getVarDouble(final String name) {
+    public Double getVarDouble(final String name) {
+        return getVarDoubleSafe(name).get();
+    }
+
+    public Optional<Double> getVarDoubleSafe(final String name) {
         return VarWrapper.optionalDouble(customVars.getOrDefault(name, dmeItem.getVar(name)));
+    }
+
+    public Boolean getVarBool(final String name) {
+        return getVarBoolSafe(name).get();
+    }
+
+    public Optional<Boolean> getVarBoolSafe(final String name) {
+        return VarWrapper.optionalBoolean(customVars.getOrDefault(name, dmeItem.getVar(name)));
     }
 
     public void setVar(final String name, final String value) {
