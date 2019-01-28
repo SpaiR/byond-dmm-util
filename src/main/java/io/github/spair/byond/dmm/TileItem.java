@@ -5,13 +5,11 @@ import io.github.spair.byond.dme.DmeItem;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Map;
 import java.util.Optional;
 
 @Getter
-@ToString(exclude = "dmeItem")
 @EqualsAndHashCode
 public class TileItem {
 
@@ -82,5 +80,15 @@ public class TileItem {
 
     public void setEmptyVar(final String name) {
         customVars.put(name, "null");
+    }
+
+    @Override
+    public String toString() {
+        return "TileItem("
+                + "x=" + x
+                + ", y=" + y
+                + ", type=" + getType()
+                + ", customVars=" + customVars
+                + ')';
     }
 }
