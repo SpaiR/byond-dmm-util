@@ -3,6 +3,8 @@ package io.github.spair.byond.dmm.drawer
 import io.github.spair.byond.dmm.Dmm
 import io.github.spair.byond.dmm.TileItem
 
+import java.awt.image.BufferedImage
+
 import static io.github.spair.byond.dmi.SpriteDir.*
 
 class RenderShell {
@@ -11,6 +13,7 @@ class RenderShell {
     private final Binding sharedData = new Binding()
 
     private final varScripts = [:]
+    private final imgScripts = [:]
 
     RenderShell(Dmm dmm, List<File> scripts) {
         bindExtensionProcs()
@@ -19,28 +22,42 @@ class RenderShell {
 
         scripts.each { scriptFile ->
             def cleanFileName = scriptFile.name.take(scriptFile.name.lastIndexOf('.'))
-            def splittedName = cleanFileName.split('~')
 
-            def scriptType = splittedName[0]
-            def objectType = splittedName[1].replace('.', '/')
-
-            if (scriptType == 'var') {
-                varScripts[objectType] = shell.parse(scriptFile)
+            cleanFileName.split('\\.').with {
+                if (it[1] == 'var') {
+                    varScripts[cleanFileName] = shell.parse(scriptFile)
+                } else if (it[1] == 'img') {
+                    imgScripts[cleanFileName] = shell.parse(scriptFile)
+                } else {
+                    throw new IllegalArgumentException("script without classification ($scriptFile.name)")
+                }
             }
         }
     }
 
-    void executeVarScriptIfAble(TileItem item) {
+    void setProc(String name, Proc proc) {
+        shell.setProperty(name, proc)
+    }
+
+    void executeVarScripts(TileItem item) {
         shell.src = item
-        for (String key in varScripts.keySet()) {
-            if (item.isType(key)) {
-                varScripts[key].run()
-            }
+        varScripts.keySet().each { key ->
+            varScripts[key].run()
         }
+    }
+
+    BufferedImage executeImgScripts(TileItem item, BufferedImage sprite) {
+        shell.src = item
+        shell.sprite = sprite
+        def finalSprite = sprite
+        imgScripts.keySet().each { key ->
+            finalSprite = imgScripts[key].run()
+        }
+        finalSprite
     }
 
     private void bindExtensionProcs() {
-        List.metaClass.<TileItem>typeOnlyEach { String type, Closure closure ->
+        List.metaClass.<TileItem>eachForTypeOnly { String type, Closure closure ->
             delegate.each { TileItem item ->
                 if (item.isType(type)) {
                     closure(item)
@@ -71,29 +88,31 @@ class RenderShell {
             int x1 = loc1.x, x2 = loc2.x, y1 = loc1.y, y2 = loc2.y
 
             if (loc1.x == loc2.x && loc1.y == loc2.y)
-                return NORTH
+                return 0
 
+            def dir
             if (x1 == x2) {
                 if (y1 < y2) {
-                    NORTH
+                    dir = NORTH
                 } else {
-                    SOUTH
+                    dir = SOUTH
                 }
             } else if (y1 == y2) {
                 if (x1 < x2) {
-                    EAST
+                    dir = EAST
                 } else {
-                    WEST
+                    dir = WEST
                 }
             } else if (x1 < x2 && y1 < y2) {
-                NORTHEAST
+                dir = NORTHEAST
             } else if (x1 < x2 && y1 > y2) {
-                SOUTHEAST
+                dir = SOUTHEAST
             } else if (x1 > x2 && y1 > y2) {
-                SOUTHWEST
+                dir = SOUTHWEST
             } else {
-                NORTHWEST
+                dir = NORTHWEST
             }
+            dir.dirValue
         }
     }
 }

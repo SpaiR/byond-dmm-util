@@ -7,6 +7,7 @@ import io.github.spair.byond.dmi.SpriteDir;
 import io.github.spair.byond.dmi.slurper.DmiSlurper;
 import io.github.spair.byond.dmm.TileItem;
 import lombok.val;
+import lombok.var;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,6 +29,7 @@ final class TileItemDrawer {
         this.iconSize = iconSize;
         this.dmeRootPath = dmeRootPath;
         this.shell = shell;
+        this.shell.setProc("getCachedDmi", (Proc<String, Dmi>) this::getCachedDmi);
     }
 
     TileItemImage drawItem(final TileItem item) {
@@ -35,7 +37,7 @@ final class TileItemDrawer {
         if (item.getVarIntSafe(ByondVars.ALPHA).orElse(255) == 0)
             return null;
 
-        shell.executeVarScriptIfAble(item);
+        shell.executeVarScripts(item);
 
         val itemIcon = item.getVarFilePathSafe(ByondVars.ICON).orElse("");
         val itemIconState = item.getVarTextSafe(ByondVars.ICON_STATE).orElse("");
@@ -52,11 +54,16 @@ final class TileItemDrawer {
         if (itemSprite == null)
             return null;
 
+        var sprite = deepImageCopy(itemSprite.getSprite());
+        sprite = shell.executeImgScripts(item, sprite);
+        if (sprite == null)
+            return null;
+
         val itemImage = new TileItemImage();
 
         itemImage.setXShift(item.getVarDoubleSafe(ByondVars.PIXEL_X).orElse(0.0).intValue());
         itemImage.setYShift(item.getVarDoubleSafe(ByondVars.PIXEL_Y).orElse(0.0).intValue());
-        itemImage.setImage(deepImageCopy(itemSprite.getSprite()));
+        itemImage.setImage(sprite);
 
         // BYOND renders objects from bottom to top, while DmmDrawer do it from top to bottom.
         // This additional shift helps to properly render objects, which have sprite height more then world icon_size.
