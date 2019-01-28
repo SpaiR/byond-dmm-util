@@ -29,6 +29,10 @@ final class TileItemDrawer {
     }
 
     TileItemImage drawItem(final TileItem item) {
+        // No need to do anything since item is invisible.
+        if (item.getVarInt(ByondVars.ALPHA).orElse(255) == 0)
+            return null;
+
         val itemIcon = item.getVarFilePath(ByondVars.ICON).orElse("");
         val itemIconState = item.getVarText(ByondVars.ICON_STATE).orElse("");
 
@@ -41,7 +45,7 @@ final class TileItemDrawer {
 
         val itemDir = SpriteDir.valueOfByondDir(item.getVarInt(ByondVars.DIR).orElse(SpriteDir.SOUTH.dirValue));
         val itemSprite = getItemSprite(itemDmi, itemIconState, itemDir);
-        if (itemSprite == null)  // TODO: add placeholder for items without sprites
+        if (itemSprite == null)
             return null;
 
         val itemImage = new TileItemImage();
