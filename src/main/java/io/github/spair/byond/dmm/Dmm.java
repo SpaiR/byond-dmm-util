@@ -44,14 +44,13 @@ public class Dmm implements Iterable<Tile> {
 
         for (int x = 1; x <= maxX; x++) {
             for (int y = maxY; y >= 1; y--) {
-                val tileContent = dmmData.getTileContentByLocation(TileLocation.of(x, y));
                 val tileItems = new ArrayList<TileItem>();
 
-                for (val tileObject : tileContent) {
+                for (val tileObject : dmmData.getTileContentByLocation(TileLocation.of(x, y))) {
                     tileItems.add(new TileItem(x, y, dme.getItem(tileObject.getType()), tileObject.getVars()));
                 }
 
-                tiles[y - 1][x - 1] = new Tile(x, y, tileContent, tileItems);
+                tiles[y - 1][x - 1] = new Tile(x, y, tileItems);
             }
         }
     }
