@@ -24,12 +24,15 @@ class RenderShell {
             def cleanFileName = scriptFile.name.take(scriptFile.name.lastIndexOf('.'))
 
             cleanFileName.split('\\.').with {
-                if (it[1] == 'var') {
-                    varScripts[cleanFileName] = shell.parse(scriptFile)
-                } else if (it[1] == 'img') {
-                    imgScripts[cleanFileName] = shell.parse(scriptFile)
-                } else {
-                    throw new IllegalArgumentException("script without classification ($scriptFile.name)")
+                switch (it[1]) {
+                    case 'var':
+                        varScripts[cleanFileName] = shell.parse(scriptFile)
+                        break
+                    case 'img':
+                        imgScripts[cleanFileName] = shell.parse(scriptFile)
+                        break
+                    default:
+                        throw new IllegalArgumentException("script without classification ($scriptFile.name)")
                 }
             }
         }
@@ -51,7 +54,7 @@ class RenderShell {
         shell.sprite = sprite
         def finalSprite = sprite
         imgScripts.keySet().each { key ->
-            finalSprite = imgScripts[key].run()
+            finalSprite = imgScripts[key].run() as BufferedImage
         }
         finalSprite
     }

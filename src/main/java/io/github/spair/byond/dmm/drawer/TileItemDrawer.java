@@ -34,10 +34,8 @@ final class TileItemDrawer {
 
     TileItemImage drawItem(final TileItem item) {
         // No need to do anything since item is invisible.
-        if (item.getVarIntSafe(ByondVars.ALPHA).orElse(255) == 0)
+        if (item.getVarInt(ByondVars.ALPHA) == 0)
             return null;
-
-        shell.executeVarScripts(item);
 
         val itemIcon = item.getVarFilePathSafe(ByondVars.ICON).orElse("");
         val itemIconState = item.getVarTextSafe(ByondVars.ICON_STATE).orElse("");
@@ -61,8 +59,8 @@ final class TileItemDrawer {
 
         val itemImage = new TileItemImage();
 
-        itemImage.setXShift(item.getVarDoubleSafe(ByondVars.PIXEL_X).orElse(0.0).intValue());
-        itemImage.setYShift(item.getVarDoubleSafe(ByondVars.PIXEL_Y).orElse(0.0).intValue());
+        itemImage.setXShift(item.getVarDouble(ByondVars.PIXEL_X).intValue());
+        itemImage.setYShift(item.getVarDouble(ByondVars.PIXEL_Y).intValue());
         itemImage.setImage(sprite);
 
         // BYOND renders objects from bottom to top, while DmmDrawer do it from top to bottom.
@@ -103,7 +101,7 @@ final class TileItemDrawer {
         val effectsList = new ArrayList<PixelEffect>();
 
         val colorValue = ColorExtractor.extract(item.getVarTextSafe(ByondVars.COLOR).orElse(""));
-        val alphaValue = item.getVarIntSafe(ByondVars.ALPHA).orElse(255);
+        val alphaValue = item.getVarInt(ByondVars.ALPHA);
 
         if (colorValue != null)
             effectsList.add(new PixelEffectColor(colorValue));
@@ -117,7 +115,7 @@ final class TileItemDrawer {
         if (dmiCache.containsKey(itemIcon)) {
             return dmiCache.get(itemIcon);
         } else {
-            File spriteFile = new File(dmeRootPath + File.separator + itemIcon);
+            File spriteFile = new File(dmeRootPath.concat(File.separator).concat(itemIcon));
             Dmi dmi = null;
 
             if (spriteFile.exists()) {

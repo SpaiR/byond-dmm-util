@@ -33,6 +33,7 @@ final class Drawer {
     private final RenderPriorityComparator comparator = new RenderPriorityComparator();
 
     private final int iconSize;
+    private final RenderShell shell;
     private final TileItemDrawer itemDrawer;
 
     Drawer(final Dmm dmm, final List<File> scripts, final MapRegion mapRegion, final FilterMode filterMode, final Set<String> types) {
@@ -52,17 +53,17 @@ final class Drawer {
         this.finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         this.iconSize = dmm.getIconSize();
-        this.itemDrawer = new TileItemDrawer(iconSize, dmm.getDmeRootPath(), new RenderShell(dmm, scripts));
+        this.shell = new RenderShell(dmm, scripts);
+        this.itemDrawer = new TileItemDrawer(iconSize, dmm.getDmeRootPath(), shell);
     }
 
     BufferedImage draw() {
-        // Distribute all items to planes/layers.
+        // Execute var scripts and distribute all items to planes/layers.
         for (val tile : dmm) {
             for (val tileItem : tile) {
                 if (allowedByFilterMode(tileItem, types, filterMode) && isInBounds(tileItem)) {
-                    val itemPlane = tileItem.getVarDoubleSafe(ByondVars.PLANE).orElse(0.0);
-                    val itemLayer = tileItem.getVarDoubleSafe(ByondVars.LAYER).orElse(0.0);
-                    getPlaneLayer(itemPlane, itemLayer).add(tileItem);
+                    shell.executeVarScripts(tileItem);
+                    getPlaneLayer(tileItem.getVarDouble(ByondVars.PLANE), tileItem.getVarDouble(ByondVars.LAYER)).add(tileItem);
                 }
             }
         }
