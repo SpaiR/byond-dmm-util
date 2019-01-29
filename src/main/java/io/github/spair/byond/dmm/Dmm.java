@@ -5,17 +5,15 @@ import io.github.spair.byond.ByondVars;
 import io.github.spair.byond.dme.Dme;
 import io.github.spair.byond.dmi.Dmi;
 import io.github.spair.dmm.io.DmmData;
-import io.github.spair.dmm.io.TileContent;
 import io.github.spair.dmm.io.TileLocation;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.val;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -23,8 +21,6 @@ import java.util.NoSuchElementException;
  */
 @Data
 public class Dmm implements Iterable<Tile> {
-
-    private final Map<String, TileContent> tileContents;
 
     @Getter(AccessLevel.NONE)
     private final Tile[][] tiles;
@@ -38,7 +34,6 @@ public class Dmm implements Iterable<Tile> {
         iconSize = dme.getItem(ByondTypes.WORLD).getVarIntSafe(ByondVars.ICON_SIZE).orElse(Dmi.DEFAULT_SPRITE_SIZE);
         maxX = dmmData.getMaxX();
         maxY = dmmData.getMaxY();
-        tileContents = Collections.unmodifiableMap(dmmData.getTileContentsByKey());
 
         tiles = new Tile[maxY][maxX];
 
@@ -46,8 +41,8 @@ public class Dmm implements Iterable<Tile> {
             for (int y = maxY; y >= 1; y--) {
                 val tileItems = new ArrayList<TileItem>();
 
-                for (val tileObject : dmmData.getTileContentByLocation(TileLocation.of(x, y))) {
-                    tileItems.add(new TileItem(x, y, dme.getItem(tileObject.getType()), tileObject.getVars()));
+                for (val tileContent : dmmData.getTileContentByLocation(TileLocation.of(x, y))) {
+                    tileItems.add(new TileItem(x, y, dme.getItem(tileContent.getType()), new HashMap<>(tileContent.getVars())));
                 }
 
                 tiles[y - 1][x - 1] = new Tile(x, y, tileItems);
@@ -60,10 +55,6 @@ public class Dmm implements Iterable<Tile> {
             return tiles[y - 1][x - 1];
         }
         throw new IllegalArgumentException("Nonexistent coordinates. X: " + x + ", Y: " + y);
-    }
-
-    public TileContent getTileContentByKey(final String key) {
-        return tileContents.get(key);
     }
 
     public boolean hasTile(final int x, final int y) {
