@@ -9,16 +9,14 @@ import static io.github.spair.byond.dmi.SpriteDir.*
 
 class RenderShell {
 
-    private final GroovyShell shell
-    private final Binding sharedData = new Binding()
+    private final GroovyShell shell = new GroovyShell(getClass().getClassLoader())
 
     private final varScripts = [:]
     private final imgScripts = [:]
 
     RenderShell(Dmm dmm, List<File> scripts) {
+        shell.dmm = dmm
         bindExtensionProcs()
-        sharedData.dmm = dmm
-        shell = new GroovyShell(getClass().getClassLoader(), sharedData)
 
         scripts.each { scriptFile ->
             def cleanFileName = scriptFile.name.take(scriptFile.name.lastIndexOf('.'))
@@ -39,7 +37,7 @@ class RenderShell {
     }
 
     void setProc(String name, Proc proc) {
-        shell.setProperty(name, proc)
+        shell.name = proc
     }
 
     void executeVarScripts(TileItem item) {
@@ -68,10 +66,8 @@ class RenderShell {
             }
         }
 
-        sharedData.oRange = { int range ->
-            Dmm dmm = sharedData.dmm
-            TileItem item = sharedData.src
-
+        shell.oRange = { TileItem item, int range ->
+            Dmm dmm = shell.dmm
             def list = [] as List
 
             list.addAll(dmm.getTile(item.x + range, item.y + range).tileItems)
@@ -87,7 +83,7 @@ class RenderShell {
             list
         }
 
-        sharedData.getDir = { TileItem loc1, TileItem loc2 ->
+        shell.getDir = { TileItem loc1, TileItem loc2 ->
             int x1 = loc1.x, x2 = loc2.x, y1 = loc1.y, y2 = loc2.y
 
             if (loc1.x == loc2.x && loc1.y == loc2.y)
