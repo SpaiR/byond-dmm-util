@@ -130,9 +130,9 @@ final class TileItemDrawer {
     private DmiSprite getItemSprite(final Dmi itemDmi, final String itemIconState, final SpriteDir itemDir) {
         // fallbacks to get at least some image
         // both are represent default byond behaviour
-        return itemDmi.getStateSprite(itemIconState, itemDir)
-                .orElseGet(() -> itemDmi.getStateSprite(itemIconState)
-                        .orElseGet(() -> itemDmi.getStateSprite("")
+        return itemDmi.getStateSpriteSafe(itemIconState, itemDir)
+                .orElseGet(() -> itemDmi.getStateSpriteSafe(itemIconState)
+                        .orElseGet(() -> itemDmi.getStateSpriteSafe("")
                                 .orElse(null)));
     }
 
