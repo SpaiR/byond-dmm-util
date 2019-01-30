@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmm.drawer
 
 import io.github.spair.byond.ByondTypes
+import io.github.spair.byond.dmi.Dmi
 import io.github.spair.byond.dmm.Dmm
 import io.github.spair.byond.dmm.Tile
 import io.github.spair.byond.dmm.TileItem
@@ -20,7 +21,7 @@ class RenderShell {
         shell.setGlobal = { name, value -> shell[name] = value }
         shell.dmm = dmm
 
-        bindTileItemExtensions()
+        bindExtensions()
         bindAdditionalProcs()
 
         scripts.each { scriptFile ->
@@ -45,7 +46,7 @@ class RenderShell {
     }
 
     void setProc(String name, Proc proc) {
-        shell.name = proc
+        shell[name] = proc
     }
 
     void executeVarScripts(TileItem item) {
@@ -65,7 +66,7 @@ class RenderShell {
         return finalSprite
     }
 
-    private void bindTileItemExtensions() {
+    private void bindExtensions() {
         TileItem.metaClass.getProperty = { String propName ->
             def meta = TileItem.metaClass.getMetaProperty(propName)
             if (meta) {
@@ -109,6 +110,14 @@ class RenderShell {
                     closure(item)
                 }
             }
+        }
+
+        Dmi.metaClass.getSprite = { String name ->
+            delegate.getStateSpriteSafe(name, SOUTH).orElseGet {
+                delegate.getStateSpriteSafe(name).orElseGet {
+                    delegate.getStateSpriteSafe('').orElse(null)
+                }
+            }?.sprite
         }
     }
 
