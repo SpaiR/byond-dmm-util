@@ -29,6 +29,8 @@ public class Dmm implements Iterable<Tile> {
     private final int iconSize;
     private final int maxX, maxY;
 
+    private final Dme environment;
+
     public Dmm(final DmmData dmmData, final Dme dme) {
         dmeRootPath = dme.getAbsoluteRootPath();
         iconSize = dme.getItem(ByondTypes.WORLD).getVarIntSafe(ByondVars.ICON_SIZE).orElse(Dmi.DEFAULT_SPRITE_SIZE);
@@ -48,6 +50,8 @@ public class Dmm implements Iterable<Tile> {
                 tiles[y - 1][x - 1] = new Tile(x, y, tileItems);
             }
         }
+
+        environment = dme;
     }
 
     public Tile getTile(final int x, final int y) {

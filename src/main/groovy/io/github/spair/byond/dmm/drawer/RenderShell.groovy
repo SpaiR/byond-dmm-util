@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmm.drawer
 
 import io.github.spair.byond.ByondTypes
+import io.github.spair.byond.dme.DmeItem
 import io.github.spair.byond.dmi.Dmi
 import io.github.spair.byond.dmm.Dmm
 import io.github.spair.byond.dmm.Tile
@@ -20,6 +21,7 @@ class RenderShell {
     RenderShell(Dmm dmm, List<File> scripts) {
         shell.setGlobal = { name, value -> shell[name] = value }
         shell.dmm = dmm
+        shell.env = dmm.environment
 
         bindExtensions()
         bindAdditionalProcs()
@@ -67,24 +69,29 @@ class RenderShell {
     }
 
     private void bindExtensions() {
+        def getProp = { item, propName ->
+            String var = item.getVar(propName)
+            if (var.startsWith('"') && var.endsWith('"') || var.startsWith("'") && var.endsWith("'")) {
+                return var.substring(1, var.length() - 1)
+            } else if (var == ByondTypes.NULL) {
+                return null
+            } else if (var.isLong()) {
+                return Long.parseLong(var)
+            } else if (var.isDouble()) {
+                return Double.parseDouble(var)
+            } else {
+                return var
+            }
+        }
+
+        DmeItem.metaClass.getProperty = { String propName ->
+            def meta = TileItem.metaClass.getMetaProperty(propName)
+            return meta ? meta.getProperty(delegate) : getProp(delegate, propName)
+        }
+
         TileItem.metaClass.getProperty = { String propName ->
             def meta = TileItem.metaClass.getMetaProperty(propName)
-            if (meta) {
-                return meta.getProperty(delegate)
-            } else {
-                String var = delegate.getVar(propName)
-                if (var.startsWith('"') && var.endsWith('"') || var.startsWith("'") && var.endsWith("'")) {
-                    return var.substring(1, var.length() - 1)
-                } else if (var == ByondTypes.NULL) {
-                    return null
-                } else if (var.isLong()) {
-                    return Long.parseLong(var)
-                } else if (var.isDouble()) {
-                    return Double.parseDouble(var)
-                } else {
-                    return var
-                }
-            }
+            return meta ? meta.getProperty(delegate) : getProp(delegate, propName)
         }
 
         TileItem.metaClass.setProperty = { String propName, Object value ->
@@ -118,6 +125,22 @@ class RenderShell {
                     delegate.getStateSpriteSafe('').orElse(null)
                 }
             }?.sprite
+        }
+
+        Tile.metaClass.getLoc = {
+            for (item in delegate.tileItems) {
+                if (item.isType(ByondTypes.TURF)) {
+                    return item
+                }
+            }
+        }
+
+        Tile.metaClass.getArea = {
+            for (item in delegate.tileItems) {
+                if (item.isType(ByondTypes.AREA)) {
+                    return item
+                }
+            }
         }
     }
 
@@ -192,6 +215,16 @@ class RenderShell {
                 }
             }
             return null
+        }
+
+        shell.rand = { long min, long max -> Math.abs(new Random().nextInt() % max + min) }
+
+        shell.pick = {
+            if (it instanceof  List) {
+                it.get(new Random().nextInt(it.size()))
+            } else if (it instanceof Set) {
+                it.getAt(new Random().nextInt(it.size()))
+            }
         }
     }
 }
